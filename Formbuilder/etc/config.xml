@@ -21,10 +21,10 @@
         <models>
             <formbuilder>
                 <class>Isatis_Formbuilder_Model</class>
-                <resourceModel>formbuilder_mysql4</resourceModel>
+                <resourceModel>formbuilder_resource</resourceModel>
             </formbuilder>
-            <formbuilder_mysql4>
-                <class>Isatis_Formbuilder_Model_Mysql4</class>
+            <formbuilder_resource>
+                <class>Isatis_Formbuilder_Model_Resource</class>
                 <entities>
                     <form>
                         <table>isa_formbuilder_form</table>
@@ -36,22 +36,16 @@
                         <table>isa_formbuilder_select_option</table>
                     </option>
                 </entities>
-            </formbuilder_mysql4>
+            </formbuilder_resource>
         </models>
         <!-- Setup db read & write connection for Mymod module -->
         <resources>
-            <!-- db write connection -->
-            <formbuilder_write>
-                <connection>
-                    <use>core_write</use>
-                </connection>
-            </formbuilder_write>
-            <!-- db read connection -->
-            <formbuilder_read>
-                <connection>
-                    <use>core_read</use>
-                </connection>
-            </formbuilder_read>
+            <formbuilder_setup>
+                <setup>
+                    <module>Isatis_Formbuilder</module>
+                    <class>Isatis_Formbuilder_Model_Resource_Setup</class>
+                </setup>
+            </formbuilder_setup>
         </resources>
         <!-- -/- -->
     </global>

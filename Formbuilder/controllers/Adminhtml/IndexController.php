@@ -4,7 +4,6 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
 {
     public function indexAction()
     {
-
         $this->loadLayout()->renderLayout();
     }
 
@@ -15,23 +14,23 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
     {
 
         $post = $this->getRequest()->getPost();
+        /**
+         * @var $form Isatis_Formbuilder_Model_Form
+         */
         $form = Mage::getModel('formbuilder/form');
-        if(isset($post['form_id']) && $post['form_id']!='') {
+
+        if (isset($post['form_id']) && $post['form_id'] != '') {
             $form->load($post['form_id']);
         }
 
         $form->setTitle($post['form_title']);
         $form->setTemplate($post['form_template']);
         $form->setSubtemplate($post['form_subtemplate']);
-        $form->save();
+
         $post['form_id'] = $form->getId();
 
+        $this->returnResult($form->save());
 
-        $jsonData = Mage::helper('core')->jsonEncode($post);
-        $this->getResponse()
-            ->clearHeaders()
-            ->setHeader('Content-Type: application/json')
-            ->setBody($jsonData);
     }
 
     /**
@@ -41,46 +40,52 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
     {
         $post = $this->getRequest()->getPost();
 
-        /**
-         * @var $element isatis_formbuilder_model_element
-         */
-        $element = Mage::getModel('formbuilder/element');
-        if(isset($post['element_id'])) {
-            //load the element so we can update it
-            $element->load($post['element_id']);
-        } else{
-            //first time we save the element so set crdate in table
-            $element->setCrdate(time());
-        }
-
-        $element->setForm_id ($post['parent_id']);
-        $element->setName($post['element_name']);
-        $element->setLabel($post['element_label']);
-        $element->setValue($post['element_value']);
-        $element->setType($post['element_type']);
-        $element->setTstamp(time());
-        $element->save();
-
-        //return the id of the element
-        $post['element_id'] = $element->getId();
-
-        //check if we need to save additional fields
-        if($post['element_type']=='select') {
-            //save the options for the selectbox
-            $optionModel = Mage::getModel('formbuilder/option');
-            foreach($post['option'] as $optionData) {
-                $optionModel->setElement_id($element->getId());
-                $optionModel->setValue($optionData);
-                $optionModel->setTstamp(time());
-                $optionModel->save();
-                $optionModel->unsetData();
+        if (isset($post['parent_id']) && $post['parent_id'] != '') {
+            /**
+             * @var $element isatis_formbuilder_model_element
+             */
+            $element = Mage::getModel('formbuilder/element');
+            if (isset($post['element_id'])) {
+                //load the element so we can update it
+                $element->load($post['element_id']);
+            } else {
+                //first time we save the element so set crdate in table
+                $element->setCrdate(time());
             }
+
+            $element->setForm_id($post['parent_id']);
+            $element->setName($post['element_name']);
+            $element->setLabel($post['element_label']);
+            $element->setValue($post['element_value']);
+            $element->setType($post['element_type']);
+            $element->setTstamp(time());
+            $element->save();
+
+            //return the id of the element
+            $post['element_id'] = $element->getId();
+
+            //check if we need to save additional fields
+            if ($post['element_type'] == 'select') {
+                //save the options for the selectbox
+                $optionModel = Mage::getModel('formbuilder/option');
+                foreach ($post['option'] as $optionData) {
+                    $optionModel->setElement_id($element->getId());
+                    $optionModel->setValue($optionData);
+                    $optionModel->setTstamp(time());
+                    $optionModel->save();
+                    $optionModel->unsetData();
+                }
+            }
+        } else {
+            $post['error'] = 'Please save the form before adding elements';
         }
 
         $jsonData = Mage::helper('core')->jsonEncode($post);
+        /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
             ->setHeader('Content-Type: application/json')
             ->setBody($jsonData);
     }
+
 }

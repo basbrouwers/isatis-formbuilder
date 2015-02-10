@@ -6,11 +6,11 @@
  * Time: 9:28 AM
  */
 
-class Isatis_Formbuilder_Model_Mysql4_Form_Collection extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Isatis_Formbuilder_Model_Resource_Option_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
     public function _construct()
 {
     parent::_construct();
-    $this->_init('formbuilder/form');
+    $this->_init('formbuilder/option');
 }
 }
