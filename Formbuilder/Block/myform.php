@@ -13,9 +13,9 @@ class Isatis_Formbuilder_Block_Myform extends Mage_Adminhtml_Block_Template
         parent::__construct();
     }
 
-    public function getForm()
+    public function getAllForms()
     {
-        Mage::getModel('form');
+        return Mage::getModel('formbuilder/form')->getCollection();
 
     }
 }

@@ -36,9 +36,9 @@ $formTable = $installer->getConnection()->newTable($installer->getTable('formbui
 
 $installer->getConnection()->createTable($formTable);
 
-$elementTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/element'))
+$formElementTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/formelement'))
     ->addColumn(
-        'element_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'formelement_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'unsigned' => true,
         'nullable' => false,
         'primary' => true,
@@ -48,7 +48,34 @@ $elementTable = $installer->getConnection()->newTable($installer->getTable('form
         'form_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'unsigned' => true,
         'nullable' => false,
+    ), 'Form ID')
+    ->addColumn('legend', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+        'nullable' => false,
         ''
+    ), 'Legend')
+    ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
+        'nullable' => false,
+    ), 'Last updated')
+    ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
+        'nullable' => false,
+    ), 'Creation date');
+
+$installer->getConnection()->createTable($formElementTable);
+$installer->getConnection()->addKey($installer->getTable('formbuilder/formelement'),'INDEX_FORM','form_id');
+
+
+$elementTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/element'))
+    ->addColumn(
+        'element_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'unsigned' => true,
+        'nullable' => false,
+        'primary' => true,
+        'identity' => true
+    ), 'ID')
+    ->addColumn(
+        'formelement_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'unsigned' => true,
+        'nullable' => false,
     ), 'Form ID')
     ->addColumn('name', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
         'nullable' => false), 'Name')
@@ -72,7 +99,7 @@ $elementTable = $installer->getConnection()->newTable($installer->getTable('form
 
 
 $installer->getConnection()->createTable($elementTable);
-$installer->getConnection()->addKey($installer->getTable('formbuilder/element'),'INDEX_FORM','form_id');
+$installer->getConnection()->addKey($installer->getTable('formbuilder/element'),'INDEX_FORMELEMENT','formelement_id');
 
 $optionTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/option'))
     ->addColumn(
@@ -107,11 +134,22 @@ $installer->getConnection()->addKey($installer->getTable('formbuilder/option'),'
  * Add the forreign key constrains
  */
 $installer->getConnection()
-    ->addForeignKey('formElement',
-                    $installer->getTable('formbuilder/element'),
+    ->addForeignKey('formElementForm',
+                    $installer->getTable('formbuilder/formelement'),
                     'form_id',
                     $installer->getTable('formbuilder/form'),
                     'form_id',
+                    'cascade',
+                    'cascade'
+    );
+
+
+$installer->getConnection()
+    ->addForeignKey('formElement',
+                    $installer->getTable('formbuilder/element'),
+                    'formelement_id',
+                    $installer->getTable('formbuilder/formelement'),
+                    'formelement_id',
                     'cascade',
                     'cascade'
     );

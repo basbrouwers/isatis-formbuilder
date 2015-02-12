@@ -7,6 +7,8 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         $this->loadLayout()->renderLayout();
     }
 
+
+
     /**
      * Save form and form atributes. Update if form is already present in DB
      */
@@ -27,9 +29,15 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         $form->setTemplate($post['form_template']);
         $form->setSubtemplate($post['form_subtemplate']);
 
+        $form->save();
         $post['form_id'] = $form->getId();
 
-        $this->returnResult($form->save());
+        $jsonData = Mage::helper('core')->jsonEncode($post);
+        /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
+        $this->getResponse()
+            ->clearHeaders()
+            ->setHeader('Content-Type: application/json')
+            ->setBody($jsonData);
 
     }
 

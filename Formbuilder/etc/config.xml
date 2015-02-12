@@ -29,6 +29,9 @@
                     <form>
                         <table>isa_formbuilder_form</table>
                     </form>
+                    <formelement>
+                        <table>isa_formbuilder_formelement</table>
+                    </formelement>
                     <element>
                         <table>isa_formbuilder_element</table>
                     </element>
@@ -85,7 +88,7 @@
                 </children>
             </cms>
         </menu>
-            
+
         <acl>
             <resources>
                 <admin>
