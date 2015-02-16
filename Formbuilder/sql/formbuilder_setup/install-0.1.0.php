@@ -7,6 +7,7 @@ $installer = $this;
 
 $installer->startSetup();
 
+/*================================FORM================================================= */
 $formTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/form'))
     ->addColumn(
         'form_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
@@ -27,6 +28,13 @@ $formTable = $installer->getConnection()->newTable($installer->getTable('formbui
         'unsigned' => true,
         'nullable' => false
     ), 'Form Template')
+    ->addColumn('action', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+        'nullable' => false,
+        ''
+    ), 'Action')
+    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Sort order')
     ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
     ), 'Last updated')
@@ -36,9 +44,12 @@ $formTable = $installer->getConnection()->newTable($installer->getTable('formbui
 
 $installer->getConnection()->createTable($formTable);
 
-$formElementTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/formelement'))
+
+
+/*============================FIELDSET=========================================== */
+$fieldsetTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/fieldset'))
     ->addColumn(
-        'formelement_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'fieldset_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'unsigned' => true,
         'nullable' => false,
         'primary' => true,
@@ -58,12 +69,16 @@ $formElementTable = $installer->getConnection()->newTable($installer->getTable('
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
-    ), 'Creation date');
+    ), 'Creation date')
+    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Sort order')
+    ->addIndex('INDEX_FORM','form_id');
 
-$installer->getConnection()->createTable($formElementTable);
-$installer->getConnection()->addKey($installer->getTable('formbuilder/formelement'),'INDEX_FORM','form_id');
+$installer->getConnection()->createTable($fieldsetTable);
 
 
+/*=================================ELEMENT==================================================== */
 $elementTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/element'))
     ->addColumn(
         'element_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
@@ -73,7 +88,7 @@ $elementTable = $installer->getConnection()->newTable($installer->getTable('form
         'identity' => true
     ), 'ID')
     ->addColumn(
-        'formelement_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'fieldset_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'unsigned' => true,
         'nullable' => false,
     ), 'Form ID')
@@ -95,12 +110,16 @@ $elementTable = $installer->getConnection()->newTable($installer->getTable('form
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
-    ), 'Creation date');
+    ), 'Creation date')
+    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Sort order')
+    ->addIndex('INDEX_FIELDSET','fieldset_id');
 
 
 $installer->getConnection()->createTable($elementTable);
-$installer->getConnection()->addKey($installer->getTable('formbuilder/element'),'INDEX_FORMELEMENT','formelement_id');
 
+/*==================================OPTION=================================================== */
 $optionTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/option'))
     ->addColumn(
         'option_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
@@ -125,17 +144,21 @@ $optionTable = $installer->getConnection()->newTable($installer->getTable('formb
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
-    ), 'Creation date');
+    ), 'Creation date')
+    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Sort order')
+    ->addIndex('INDEX_ELEMENT','element_id');
 
 $installer->getConnection()->createTable($optionTable);
-$installer->getConnection()->addKey($installer->getTable('formbuilder/option'),'INDEX_ELEMENT','element_id');
+
 
 /**
  * Add the forreign key constrains
  */
 $installer->getConnection()
-    ->addForeignKey('formElementForm',
-                    $installer->getTable('formbuilder/formelement'),
+    ->addForeignKey('formFieldset',
+                    $installer->getTable('formbuilder/fieldset'),
                     'form_id',
                     $installer->getTable('formbuilder/form'),
                     'form_id',
@@ -143,16 +166,16 @@ $installer->getConnection()
                     'cascade'
     );
 
-
 $installer->getConnection()
-    ->addForeignKey('formElement',
+    ->addForeignKey('fieldsetElement',
                     $installer->getTable('formbuilder/element'),
-                    'formelement_id',
-                    $installer->getTable('formbuilder/formelement'),
-                    'formelement_id',
+                    'fieldset_id',
+                    $installer->getTable('formbuilder/fieldset'),
+                    'fieldset_id',
                     'cascade',
                     'cascade'
     );
+
 
 $installer->getConnection()
     ->addForeignKey('elementOption',

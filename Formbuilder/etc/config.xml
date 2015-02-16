@@ -29,9 +29,9 @@
                     <form>
                         <table>isa_formbuilder_form</table>
                     </form>
-                    <formelement>
-                        <table>isa_formbuilder_formelement</table>
-                    </formelement>
+                    <fieldset>
+                        <table>isa_formbuilder_fieldset</table>
+                    </fieldset>
                     <element>
                         <table>isa_formbuilder_element</table>
                     </element>

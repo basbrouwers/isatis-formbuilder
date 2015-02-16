@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: basb
@@ -7,45 +8,66 @@
  */
 class Isatis_Formbuilder_Block_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 {
+    public $formData = null;
+    private $templatePath;
+    private $fileName = 'elements.html';
+    private $templateData;
+
     public function _construct()
     {
         parent::_construct();
-        $this->_blockGroup = 'isatis_formbuilder';
-        $this->_controller = 'edit';
-        $this->_headerText = "Isatis Formbuilder";
+        //open the template file
+        $this->templatePath = Mage::getModuleDir('etc', 'Isatis_Formbuilder') . DIRECTORY_SEPARATOR . 'Templates';
+        $this->formData = $this->getFormData();
+    }
+
+
+
+
+    public function buildForm()
+    {
+        $this->templateData = file_get_contents($this->templatePath . DIRECTORY_SEPARATOR . $this->fileName);
+
+        $formCode = '';
+        foreach($this->formData[0]['fieldsets'] as $fieldset) {
+            $formCode .= $this->buildFieldset($fieldset);
+        }
+
+
+        return $formCode;
 
     }
-    /**
-     * Preparing form
-     *
-     * @return Mage_Adminhtml_Block_Widget_Form
-     */
-    protected function _prepareForm()
+
+    public function buildFieldset($fieldset)
     {
-        $form = new Varien_Data_Form(
-            array(
-                'id' => 'edit_form',
-                'action' => $this->getUrl('*/*/save'),
-                'method' => 'post',
-            )
-        );
+        preg_match('/<!--field.*?-->(.*?)<!--.*?-->/s',$this->templateData,$matches);
+        $fieldsetCode = $matches[1];
 
-        $form->setUseContainer(true);
-        $this->setForm($form);
-
-        $fieldset = $form->addFieldset('display', array(
-            'legend' => 'legend',
-            'class' => 'fieldset-wide'
-        ));
-
-        $fieldset->addField('label', 'text', array(
-            'name' => 'label',
-            'label' => 'label',
-        ));
-
-        if (Mage::registry('Formbuilder_edit')) {
-            $form->setValues(Mage::registry('Formbuilder_form')->getData());
+        foreach ($fieldset['elements'] as $element) {
+            $fieldsetCode .= $this->buildElement($element);
         }
-        return parent::_prepareForm();
+        return $fieldsetCode;
+
+
+    }
+
+    private function buildElement($element)
+    {
+        $elementCode = '';
+
+        //fetch the element from the templateData
+        preg_match('/<!--input.*?-->(.*?)<!--.*?-->/s',$this->templateData,$matches);
+        $elementCode = $matches[1];
+
+        return $elementCode;
+
+
+    }
+
+    public function getFormfields($formId)
+    {
+
+        $formfields = Mage::getModel('formbuilder/fieldset')->getCollection()->addFieldToFilter('form_id', '7');
+        return array('formfields' => $formfields);
     }
 }
