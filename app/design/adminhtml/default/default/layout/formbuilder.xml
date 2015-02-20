@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<layout>
+    <formbuilder>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>../leef/js/lib/jquery-1.11.2.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>../leef/js/lib/jquery-ui/jquery-ui.min.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>../leef/featherlight.min.css</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>../leef/js/lib/featherlight.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>../leef/js/formbuilder.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>../leef/isa_formbuilder.css</name>
+            </action>
+        </reference>
+        <reference name="content">
+                <block type="isatis_formbuilder/myform" name="formbuilderHeader" template="formbuilder/header.phtml"/>
+                <block type="isatis_formbuilder/myform" name="element" template="formbuilder/elements.phtml"/>
+            </reference>
+    </formbuilder>
+
+    <formbuilder_adminhtml_index_index>
+        <update handle="formbuilder"/>
+        <reference name="content">
+            <block type="isatis_formbuilder/myform" name="myform" template="formbuilder/index.phtml"/>
+        </reference>
+    </formbuilder_adminhtml_index_index>
+
+    <formbuilder_adminhtml_index_editform>
+        <update handle="formbuilder" />
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>../leef/js/formbuilder_edit.js</name>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="isatis_formbuilder/edit_form" name="editform" template="formbuilder/edit.phtml"/>
+        </reference>
+    </formbuilder_adminhtml_index_editform>
+
+</layout>

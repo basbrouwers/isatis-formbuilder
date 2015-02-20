@@ -1,0 +1,93 @@
+<div class="column2">
+    <form name="editForm" id="editFormAttributes" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveForm") ?>">
+        <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+        <input type="hidden" id="form_id" name="form_id" value=""/>
+
+        <div class="column">
+            <label for="formname">Name:</label><input type="text" name="form_title"/>
+        </div>
+        <div class="column">
+            <strong>Page Template</strong>
+            <select name="form_template">
+                <option value="1">standard</option>
+                <option value="2">Full width</option>
+                <option value="3">only Right</option>
+            </select>
+        </div>
+
+        <div class="column">
+            <strong>Form Template</strong>
+
+            <select name="form_subtemplate">
+                <option value="1">1 column</option>
+                <option value="2">2 columns</option>
+            </select>
+        </div>
+        <div class="column">
+
+            <button id="formsubmit" title="Opslaan" type="submit" class="scalable task">
+                <span>Opslaan</span>
+            </button>
+        </div>
+
+    </form>
+    <div class="column" id="editFormFieldSuccess">&nbsp;</div>
+
+    <div class="formcontainter" id="formcontainer">
+            <div class="droppable" id="formcontainerMainArea">
+            </div>
+
+    </div>
+
+</div>
+
+<div id="formFieldEditor" class="fieldeditor-section">
+    <div id="editForm">
+        <strong>Edit element properties</strong>
+
+        <form name="editElement" id="editFormField" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveElement") ?>">
+            <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+            <input type="hidden" name="parent_id" id="parent_id" value="">
+            <input type="hidden" id="element_id" name="element_id" value=" "/>
+            <input type="hidden" id="element_type" name="element_type" value=" "/>
+            <input type="hidden" id="element_sort_order" name="element_sort_order" value=" "/>
+
+
+            <!--========================GENERAL fields======================-->
+            <div id="generalFormElements" class="formRow">
+                <label for="elementName">Name: </label><input type="text" name="element_name" id="elementName" class="nameEntry"/>
+            </div>
+
+            <!--==========================FIELDSET================================-->
+            <div id="fieldsetFormElements" class="formRow fieldset">
+                <label for="elementValue">Legend: </label><input type="text" name="element_legend" id="elementLegend" class="fieldsetEntry"/>
+            </div>
+
+            <!--===========================INPUT==============================-->
+            <div id="inputFormElements" class="formRow">
+                <label for="elementLabel">Label: </label><input type="text" name="element_label" id="elementLabel" class="valueEntry"/><br/>
+                <label for="elementValue">Value: </label><input type="text" value="" element_value" id="elementValue" class="valueEntry"/>
+            </div>
+
+            <!--=========================SELECT===========================-->
+            <div id="selectFormElements">
+                <strong>Voeg de options voor de selectbox toe</strong><br/>
+            </div>
+
+            <button id="elementSubmit" title="Opslaan" type="submit" class="scalable task">
+                <span>Opslaan</span>
+            </button>
+            <div id="error"></div>
+        </form>
+
+    </div>
+</div>
+<form id="sortOrderForm" method="post" class="nonAjax" name="sortOrderForm" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveSortOrder") ?>?isAjax=true">
+    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+</form>
+<form id="removeElementForm" method="post" class="nonAjax" name="removeElementForm" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/removeElement") ?>?isAjax=true">
+    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+</form>
+
+
+

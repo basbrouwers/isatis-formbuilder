@@ -1,0 +1,426 @@
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.btn-remove {
+    background: url(images/delete.png) no-repeat 100% 0;
+    background-size: 20px 20px;
+
+}
+
+.btn-edit {
+    background: url(images/edit.png) no-repeat 100% 0;
+    background-size: 20px 20px;
+}
+
+.btn-plus {
+    background: url(images/plus.png) no-repeat 100% 0;
+    background-size: 20px 20px;
+}
+
+#editFormFieldSuccess {
+    background: url(images/checkbox.png) no-repeat 100% 0;
+    background-size: 20px 20px;
+    width: 20px;
+    height: 20px;
+    display: none;
+
+}
+
+.formcontainter {
+    width: 100%;
+    border: 1px solid #a9a9a9;
+    float: right;
+    clear: none;
+    min-height: 500px;
+
+}
+
+.draggable {
+    cursor: move;
+}
+
+.droppable {
+    height: 35px;
+    clear: both;
+    background-color: #eeeeee;
+}
+
+.drop-hover {
+    border: 1px dashed #bcbcbc;
+
+}
+
+#formElements {
+    width: 20%;
+}
+
+#formFieldEditor {
+    display: none;
+}
+
+.fieldeditor-section {
+    border-top: 1px solid grey;
+}
+
+.label {
+    margin-right: 5px;
+    width: 75px;
+    display: inline-block;
+    text-align: right;
+}
+
+body.formbuilder-adminhtml-index-index fieldset legend {
+
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    margin: 0px;
+    padding: 5px;
+    visibility: visible;
+    width: auto;
+}
+
+fieldset.fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+    min-height: 10px;
+}
+legend {
+    height:22px;
+    line-height: 22px;
+    visibility: visible;
+    width:auto;
+}
+#formElements {
+    display: block;
+}
+
+.fieldeditor {
+    width: 80%;
+    float: left;
+}
+
+.fieldeditor div {
+    margin-bottom: 10px;
+}
+
+.formRow {
+    margin: 10px;
+}
+
+.column {
+    margin: 2px 15px;
+    float: left;
+}
+
+.column1 {
+    float: left;
+    width: 20%;
+}
+
+.column2 {
+    float: right;
+    width: 80%
+}
+
+.box {
+    display: inline-block;
+    background-color: transparent;
+    border: hidden;
+
+}
+
+span.error {
+    display:none;
+    font-family:"Helvetica Neue", Helvetica, Verdana, sans-serif;
+    color: #d80000;
+}
+
+span.message {
+    display:none;
+    font-family:"Helvetica Neue", Helvetica, Verdana, sans-serif;
+    color: #00b000;
+    float:right;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+#selectFormElements {
+    display: none;
+}
+
+.checkbox {
+    display: inline;
+    padding: 0px 5px 5px 18px;
+    float: left;
+    height: 12px;
+    background-image: url('images/check_standard.png');
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+}
+
+/* --- inputs --- */
+/***** input holder *****/
+.input {
+    height: 32px;
+    float: left;
+}
+
+.input.small {
+    height: 22px;
+}
+
+.input.big {
+    height: 40px;
+}
+
+.input.bigger {
+    height: 100px;
+}
+
+.input.front.validation-passed {
+    background-position: 0 -636px;
+}
+
+.input.back.validation-passed {
+    background-position: 100% -636px;
+}
+
+.input.front.validation-failed {
+    background-position: 0 -740px;
+}
+
+.input.back.validation-failed {
+    background-position: 100% -740px;
+}
+
+.input.front.focus {
+    background-position: 0 -844px;
+}
+
+.input.back.focus {
+    background-position: 100% -844px;
+}
+
+.input.front.small {
+    background-position: 0 -938px;
+}
+
+.input.back.small {
+    background-position: 100% -938px;
+}
+
+.input.front.small.validation-passed {
+    background-position: 0 -1022px;
+}
+
+.input.back.small.validation-passed {
+    background-position: 100% -1022px;
+}
+
+.input.front.small.validation-failed {
+    background-position: 0 -1106px;
+}
+
+.input.back.small.validation-failed {
+    background-position: 100% -1106px;
+}
+
+.input.front.small.focus {
+    background-position: 0 -1190px;
+}
+
+.input.back.small.focus {
+    background-position: 100% -1190px;
+}
+
+.input.front.big {
+    background-position: 0 -60px;
+}
+
+.input.back.big {
+    background-position: 100% -60px;
+}
+
+.input.front.big.validation-passed {
+    background-position: 0 -180px;
+}
+
+.input.back.big.validation-passed {
+    background-position: 100% -180px;
+}
+
+.input.front.big.validation-failed {
+    background-position: 0 -300px;
+}
+
+.input.back.big.validation-failed {
+    background-position: 100% -300px;
+}
+
+.input.front.big.focus {
+    background-position: 0 -420px;
+}
+
+.input.back.big.focus {
+    background-position: 100% -420px;
+}
+
+.input.front.bigger {
+    background-position: 0 -1352px;
+}
+
+.input.back.bigger {
+    background-position: 100% -1352px;
+}
+
+.input.front.bigger.validation-passed {
+    background-position: 0 -1592px;
+}
+
+.input.back.bigger.validation-passed {
+    background-position: 100% -1592px;
+}
+
+.input.front.bigger.validation-failed {
+    background-position: 0 -1832px;
+}
+
+.input.back.bigger.validation-failed {
+    background-position: 100% -1832px;
+}
+
+.input.front.bigger.focus {
+    background-position: 0 -2072px;
+}
+
+.input.back.bigger.focus {
+    background-position: 100% -2072px;
+}
+
+/***** input *****/
+.input input,
+.input select, textarea {
+    font-family: 'Open Sans', Arial, sans-serif;
+    height: 28px;
+    margin: 0;
+    padding: 0 12px;
+    border: 1px solid #ccc;
+    float: left;
+    border-radius: 5px
+}
+
+.input select {
+    height: 32px;
+    padding: 4px 0 4px 10px;
+}
+
+.input.validation-passed input {
+    background-position: 100% -584px;
+}
+
+.input.validation-passed select {
+    background-position: -778px -584px;
+}
+
+.input.validation-failed input,
+.input.validation-failed select {
+    background-position: 100% -688px;
+}
+
+.input.focus input,
+.input.focus select {
+    background-position: 100% -792px;
+}
+
+.input.small input {
+    height: 18px;
+    background-position: 0 -896px;
+}
+
+.input.small select {
+    height: 22px;
+    padding: 0 6px;
+    background-position: 0 -896px;
+}
+
+.input.small.validation-passed input {
+    background-position: 100% -980px;
+}
+
+.input.small.validation-passed select {
+    background-position: -790px -980px;
+}
+
+.input.small.validation-failed input,
+.input.small.validation-failed select {
+    background-position: 100% -1064px;
+}
+
+.input.small.focus input,
+.input.small.focus select {
+    background-position: 100% -1148px;
+}
+
+.input.big input {
+    height: 36px;
+    background-position: 0 0;
+}
+
+.input.big select {
+    height: 40px;
+    background-position: 0 0;
+}
+
+.input.big.validation-passed input {
+    background-position: 100% -120px;
+}
+
+.input.big.validation-passed select {
+    background-position: -790px -120px;
+}
+
+.input.big.validation-failed input,
+.input.big.validation-failed select {
+    background-position: 100% -240px;
+}
+
+.input.big.focus input,
+.input.big.focus select {
+    background-position: 100% -360px;
+}
+
+.input.bigger textarea {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    height: 88px;
+    margin: 0 12px;
+    padding: 6px 0;
+    border: 1px solid #ccc;
+    resize: none;
+    float: left;
+}
+
+.input.bigger.validation-passed textarea {
+    background-position: 100% -1472px;
+}
+
+.input.bigger.validation-failed textarea {
+    background-position: 100% -1712px;
+}
+
+.input.bigger.focus textarea {
+    background-position: 100% -1952px;
+}
+
+input.readonly {
+    color: #888;
+    background: #f2f2f2;
+}
+
