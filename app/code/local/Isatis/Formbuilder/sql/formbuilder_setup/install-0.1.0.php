@@ -64,6 +64,10 @@ $fieldsetTable = $installer->getConnection()->newTable($installer->getTable('for
         'nullable' => false,
         ''
     ), 'Legend')
+    ->addColumn('pagenumber', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'unsigned' => true,
+        ''
+    ), 'Pagenumber')
     ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
     ), 'Last updated')

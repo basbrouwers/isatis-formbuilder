@@ -11,9 +11,8 @@ var droptions = {
     hoverClass: 'drop-hover',
     tolerance: 'touch',
     accept: '.draggable',
-    //exclude: '.droppable',
-    //cancel: '.droppable',
-    items:'div:not(.droppable)',
+    items: 'div:not(.droppable)',
+
     drop: function (event, ui) {
         //clone curent droppable
         var newDropArea = $j(this).clone();
@@ -40,27 +39,27 @@ var droptions = {
 var leef = {
     version: '1.0.0',
     activeField: null,//field in the form that is being edited
-    messageTimer:null,
+    messageTimer: null,
 
     //initialize our leef object and related functions
     init: function () {
 
         //make dropped elements sortable in main area
-        $j('#formcontainerMainArea').sortable({
+        $j('.formcontainerMainArea').sortable({
             helper: 'clone',
-            start: function (event, ui) {
-                $(ui.item).data("startindex", ui.item.index());
+            drag: function (event, ui) {
+                //hide edit icons
+                ui.item.find('.btn-icon').hide();
             },
-            stop: function (event, ui) {
+            update: function (event, ui) {
                 leef.updateSortOrder(ui.item);
+                ui.item.find('.btn-icon').show();
+
             }
         }),
 
             //enable draggables
             $j('.draggable').draggable({revert: "invalid", helper: "clone"}),
-
-            //configure droppable area
-            $j('.droppable').droppable(droptions),
 
             //enable delete button
             $j('body').on('click', '.btn-remove', function () {
@@ -77,6 +76,18 @@ var leef = {
                 leef.addOption(this);
             }),
 
+            $j('body').on('click', '.btnAddpage', function () {
+                leef.addPage();
+            }),
+
+            $j('.btn-icon').on('mouseover',function(){
+                console.log('over');
+            }),
+
+            $j('#form_subtemplate_select').on('change', function(){
+                leef.setSubTemplate($j(this).val());
+            }),
+
             //check if a form is submitted and perform ajax call to save the data
             $j(document).on('submit', 'form', function () {
                 //don't handle forms that have nonAjax class
@@ -84,6 +95,7 @@ var leef = {
                     //return true so default event fires and form is submitted
                     return true;
                 }
+
                 //the action attribute of the form element determines which action will
                 //be called in magento
                 var url = $j(this).attr('action') + 'isAjax=true';
@@ -102,7 +114,7 @@ var leef = {
                                     $j('#' + key).val(value);
                                     if (leef.activeField != null) {
                                         leef.activeField.attr('id', value);
-                                        leef.activeField.closest('.formRow').attr('id','element_'+value);
+                                        leef.activeField.closest('.formRow').attr('id', 'element_' + value);
                                     }
                                 }
                             })
@@ -110,15 +122,19 @@ var leef = {
                             //close featherlight box if it exists
                             if ($j.featherlight.current()) {
                                 $j.featherlight.current().close();
+                                leef.displayMessage('Element succesvol opgeslagen');
                             } else {
                                 //we submitted the form so show succes icon
                                 $j("#editFormFieldSuccess").fadeIn();
                                 setTimeout(function () {
                                     $j('#editFormFieldSuccess').fadeOut();
                                 }, 3000);
+                                //configure droppable area
+                                $j('.droppable').droppable(droptions);
+
                             }
                         } else {
-                            leef.displayError(response.error);
+                            leef.displayError(response.message);
                         }
                     }
                 )
@@ -127,16 +143,41 @@ var leef = {
             })
     },
 
+    addPage: function(){
+        //add the page
+        var newPage = $j('#page-1').clone();
+
+        ////remove all content except for the droparea
+        var droppable = $j('.droppable').first();
+        $j(newPage).html('').append(droppable);
+
+        var pagenumber = $j('div.formcontainer').length+1;
+        $j('#page-'+(pagenumber-1)).find('.btnAddPageWrap').remove();
+
+        $j(newPage).attr('id','page-'+pagenumber);
+
+
+        $j('#page-'+(pagenumber-1)).after(newPage);
+    },
+
     /**
      *
      * @param errorMessage string
      */
     displayError: function (errorMessage) {
+
+        if (leef.messageTimer) {
+            clearTimeout(leef.messageTimer);
+        }
         $j('#error').html(errorMessage);
+        $j("#error").fadeIn();
+        leef.messageTimer = setTimeout(function () {
+            $j('#error').fadeOut();
+        }, 3000);
     },
 
     displayMessage: function (message) {
-        if(leef.messageTimer){
+        if (leef.messageTimer) {
             clearTimeout(leef.messageTimer);
         }
         $j('#message').html(message);
@@ -144,7 +185,6 @@ var leef = {
         leef.messageTimer = setTimeout(function () {
             $j('#message').fadeOut();
         }, 3000);
-
 
     },
     /**
@@ -156,43 +196,46 @@ var leef = {
         //build element container
         var droppedElement = ui.draggable.html();
 
-        var container = '<div>' + droppedElement + '<div class=" btn-icon btn-edit" id="element-">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div></div>';
+        var container = '<div class="editbuttons">' + droppedElement + '<div class="btn-icon btn-edit">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div></div>';
 
         $j(container).appendTo(droparea);
 
         //make sure all items are sortable, including the new added item
         $j(droparea).find('.sortable').sortable({
             helper: 'clone',
-            start: function(event,ui) {
-                $j(ui.item).data("startindex", ui.item.index());
+
+            drag: function (event, ui) {
+                ui.item.find('.btn-icon').hide();
             },
-            stop: function (event, ui) {
+            update: function (event, ui) {
                 //$j(this).sortable( "toArray")
-                leef.updateSortOrder(event,ui);
+                leef.updateSortOrder(event, ui);
+                ui.item.find('.btn-icon').show();
+
+
             }
         });
 
     },
 
-
     /**
      * Removes element from form by removing it's parent container
-     * @param element
+     * @param element object is the delete button that was clicked
      */
     removeElement: function (element) {
 
 
         //update the database to remove the element
-        var url= $j('#removeElementForm').attr('action');
+        var url = $j('#removeElementForm').attr('action');
         var formData = $j('#removeElementForm').serializeArray();
+
         //formRow contains the element id. format is: element_123
-        var element_id = $j(element).closest('.formRow').attr('id').substr(8);
+        var element_id = $j(element).closest('.formRow').attr('id');
 
-        formData.push({name:'element_id', value:element_id});
+        formData.push({name: 'element_id', value: element_id});
 
-
-        $j.post(url, formData,function (response) {
-            if(!response.error) {
+        $j.post(url, formData, function (response) {
+            if (!response.error) {
                 ////removes the input element and siblings by removing the parent
                 $j(element).closest('.formRow').remove();
                 leef.displayMessage('Element succesvol verwijderd.');
@@ -210,7 +253,12 @@ var leef = {
 
         leef.activeField = element;
 
-        var elementType = element[0].tagName;
+        var elementType = $j(element[0]).attr('type');
+        if (!elementType) {
+            elementType = element[0].tagName;
+        }
+
+        elementType = elementType.toLowerCase();
 
         //set the parent_id of the element to the id of the form
         leef.determineParent(element);
@@ -221,8 +269,11 @@ var leef = {
         });
 
         //init formfield editor
-        leef.initFormFieldEditor(elementType, function () {
-            data = $j('#formFieldEditor').clone(true).html();
+        leef.initFormFieldEditor(elementType, function (formfields) {
+            data = $j('#formFieldEditor').clone(true);
+            data.find('#elementSubmit').before(formfields);
+            data = data.show();
+
 
             //assign our update functions to featherlights keydown event handler
             $j.featherlight(data, {
@@ -237,9 +288,9 @@ var leef = {
     },
 
     determineParent: function (element) {
-        var elementType = element[0].tagName;
+        var elementType = element[0].tagName.toLowerCase();
 
-        switch (elementType.toLocaleLowerCase()) {
+        switch (elementType) {
             case 'fieldset' :
                 //fieldsets always have the form as parent so fetch the form_id
                 $j('#parent_id').val($j('#form_id').val());
@@ -250,13 +301,12 @@ var leef = {
                 break;
         }
     },
-
     addOption: function (button) {
         var option = '<input type="text" name="option[]" /><br />';
         $j(option).insertBefore(button);
         //add the new option field to the selectbox
     },
-
+    
     /**
      * Builds the editor for altering the attributes of an input field
      * @param {jQuery}elementType
@@ -264,48 +314,60 @@ var leef = {
      */
     initFormFieldEditor: function (elementType, callback) {
         var elementsToShow = '#' + elementType.toLowerCase() + 'FormElements';
+        console.log(elementsToShow);
         //set id of element in hidden field of the form
         $j('#element_id').val(leef.activeField.prop('id'));
 
         //set the element type
         $j('#element_type').val(elementType);
 
-        switch (elementType.toLowerCase()) {
-            case 'input':
-                //get value of the name attribute and fill form field
-                $j('#elementName').attr('value',leef.activeField.attr('name'));
-
-                //get field value and  fill value field in edit form
-                $j('#elementValue').attr('value',leef.activeField[0].value);
-
-                //get label text
-                $j('#elementLabel').attr('value',leef.activeField.parent().find('label').text());
+        console.log(elementType);
+        switch (elementType) {
+            case 'fieldset':
+                $j('#pagenumber').val(leef.activeField.closest('.formcontainer').attr('id').substr(5));
+                
+                
                 break;
-
             case 'select':
-                $j('#element_type').val(elementType.toLowerCase());
-
                 //get attribute name value
-                $j('#elementName').attr('value',leef.activeField.attr('name'));
+                $j('#elementName').attr('value', leef.activeField.attr('name'));
                 //get label value
-                $j('#elementLabel').attr('value',leef.activeField.closest('label').text());
+                $j('#elementLabel').attr('value', leef.activeField.closest('label').text());
 
+                $j('#selectoptions').empty();
                 //get the options from the selectbox
                 for (var i = 0; i < leef.activeField[0].options.length; i++) {
-                    $j('#selectFormElements').append('<input class="formElement"  name="options[]"value="' + leef.activeField[0].options[i].text + '" type="text"/><br />');
+                    $j('#selectoptions').append('<input class="formElement selectoption"  name="options[]" value="' + leef.activeField[0].options[i].text + '" type="text"/><br />');
                 }
+
                 //add the plus button so user can add more options
-                $j("#selectFormElements").append('<div class="btn-plus">&nbsp;</div>');
+                $j("#selectoptions").append('<div class="btn-plus">&nbsp;</div>');
+                $j('#selectoptions').show();
+                break;
+            case 'radio':
+
+            break;
+            case 'checkbox':
+            break;
+            default:
+                //get value of the name attribute and fill form field
+                $j('#elementName').attr('value', leef.activeField.attr('name'));
+
+                //get field value and  fill value field in edit form
+                $j('#elementValue').attr('value', leef.activeField[0].value);
+
+                //get label text
+                $j('#elementLabel').attr('value', leef.activeField.parent().find('label').text());
                 break;
         }
 
-
-        $j("#generalFormElements").show();
-        $j(elementsToShow).show();
+        var formfields = $j("#generalFormElements").clone();
+        $j(formfields).append($j(elementsToShow).html());
+        $j(formfields).show();
 
 
         if ($j.isFunction(callback)) {
-            callback.call();
+            callback(formfields);
         }
     },
 
@@ -315,7 +377,6 @@ var leef = {
      */
     updateFormElement: function (formField) {
         //determine field to update
-
 
         var field = $j(formField).attr('name').substr(8);
 
@@ -372,31 +433,33 @@ var leef = {
      *
      * @param data
      */
-    updateSortOrder: function (event,ui) {
+    updateSortOrder: function (event, ui) {
 
         //convert the parent div of the dragged element to an array containing the sorted elements
-        data =$j('#'+ui.item.parent().attr('id')).sortable('toArray');
+        data = $j('#' + ui.item.parent().attr('id')).sortable('toArray');
 
-        
-        var url= $j('#sortOrderForm').attr('action');
+
+        var url = $j('#sortOrderForm').attr('action');
 
         var formData = $j('#sortOrderForm').serializeArray();
 
-        formData.push({name:'sortOrder', value:data});
+        formData.push({name: 'sortOrder', value: data});
 
-        $j.post(url, formData,function (response) {
-            if(!response.error) {
+        $j.post(url, formData, function (response) {
+            if (!response.error) {
                 leef.displayMessage('Sortering succesvol opgeslagen');
             } else {
                 leef.displayError(response.message);
             }
-
         })
 
+    },
+
+    setSubTemplate: function (value) {
+        $j('#page-1').html($j('#'+value).html());
     }
 
 };
-
 
 //perform initialization once document is loaded
 $j(function () {

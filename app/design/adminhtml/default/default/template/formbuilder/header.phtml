@@ -2,7 +2,7 @@
     <h3 class="icon-head">Formbuilder</h3><span id="error" class="error" style="float:right"></span><span id="message" class="message" ></span>
     <form method="post" name="formSelector" id="formSelector" class="nonAjax" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/editForm") ?>">
         <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
-        <select name="selected_form_id" id="#selected_form_id">
+        <select name="selected_form_id" id="selected_form_id">
             <?php
             $forms = $this->getAllForms();
             $activeForm = $this->getActiveForm();

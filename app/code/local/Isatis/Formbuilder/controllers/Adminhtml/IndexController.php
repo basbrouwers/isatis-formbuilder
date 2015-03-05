@@ -37,7 +37,29 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             ->clearHeaders()
             ->setHeader('Content-Type: application/json')
             ->setBody($jsonData);
-}
+    }
+
+    /**
+     * [publishFormAction description]
+     * @return [type] [description]
+     */
+    public function publishFormAction(){
+        //fetch the id of the form
+        $post = $this->getRequest()->getPost();
+
+        if(isset($post['publish_form_id']) && $post['publish_form_id']!=''){
+            $form_id = $post['publish_form_id'];
+        }
+        $formData = $this->getData($form_id);
+
+        $fileWriter = Mage::helper('formbuilder/Filewriter_Data');
+
+        $formBuilder = Mage::helper('formbuilder/ComponentConfigurator');
+
+        foreach($formData[0]['fieldsets'] as $key=>$fieldset) {
+            $form = $formBuilder->configureFieldset($fieldset);
+        }
+    }
 
     /**
      *
@@ -54,7 +76,8 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
                 $post = $this->saveFormElementAction($post);
             }
         } else {
-            $post['error'] = 'Please save the form before adding elements';
+            $post['error'] = true;
+            $post['message'] = 'Please save the form before adding elements';
         }
 
         $jsonData = Mage::helper('core')->jsonEncode($post);
@@ -69,10 +92,11 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
      * Fetches the id from string $value. id is always proceeded by an '_' sign
      * @param $value string (called by reference)
      */
-    public function getCleanId(&$value)
+    public function getCleanId($value)
     {
-        preg_match('/^.*_(.*?)$/', $value, $matches);
-        $value = $matches[1];
+        $start = strpos($value,'_')+1;
+        $id = substr($value,intval($start));
+        return $id;
     }
 
     /**
@@ -142,8 +166,10 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             //first time we save the element so set crdate in table
             $fieldset->setCrdate(time());
         }
+
         $fieldset->setFormId($post['parent_id']);
         $fieldset->setLegend($post['element_legend']);
+        $fieldset->setPagenumber($post['psgenumber']);
         $fieldset->setTstamp(time());
         $fieldset->save();
         $post['element_id'] = $fieldset->getId();
@@ -162,7 +188,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
              * @var $element isatis_formbuilder_model_element
              */
             $element = Mage::getModel('formbuilder/element');
-            if (isset($post['element_id'])) {
+            if (isset($post['element_id']) && $post['element_id'] != '') {
                 //load the element so we can update it
                 $element->load($post['element_id']);
             } else {
@@ -176,6 +202,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             $element->setValue($post['element_value']);
             $element->setType($post['element_type']);
             $element->setTstamp(time());
+
             $element->save();
 
             //return the id of the element
@@ -196,7 +223,8 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             }
             return $post;
         } else {
-            $post['error'] = 'Please save the form before adding elements';
+            $post['error'] = true;
+            $post['message'] = 'Please save the form before adding elements';
             return $post;
         }
     }
@@ -213,13 +241,15 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             $post['message'] = "Element NOT removed! Element not found in database";
         } else {
             $elementModel = Mage::getModel('formbuilder/element');
+            $element_id = $this->getCleanId($post['element_id']);
             try {
-                $elementModel->setId($post['element_id'])->delete();
+                $elementModel->setId($element_id)->delete();
             } catch (Exception $e) {
                 $post['error'] = true;
                 $post['message'] = "Element NOT removed! Error when executing query";
             }
         }
+
 
         $jsonData = Mage::helper('core')->jsonEncode($post);
 
@@ -231,27 +261,13 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
     }
 
     /**
-     * @return array
      */
     public function getFormDataAction()
     {
         $post = Mage::app()->getRequest()->getPost();
         $formId = $post['requested_form_id'];
 
-        $form = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
-
-        //Instanciate fieldset Model and get all fieldset for the requested form
-        $fieldsets = Mage::getModel('formbuilder/fieldset')->getCollection()->addFieldToFilter('form_id', $formId)->setOrder('tstamp', 'desc')->getData();
-
-
-        foreach ($fieldsets as &$fieldset) {
-            $elements = Mage::getModel('formbuilder/element')->getCollection()->addFieldToFilter('fieldset_id', $fieldset['fieldset_id'])->setOrder('sort_order', 'desc')->getData();
-            //add the elements to the fieldset
-            $fieldset['elements'] = $elements;
-        }
-
-        //add the fieldset to the form
-        $form[0]['fieldsets'] = $fieldsets;
+        $form = $this->getData($formId);
 
         $jsonData = Mage::helper('core')->jsonEncode($form);
 
@@ -260,5 +276,36 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             ->clearHeaders()
             ->setHeader('Content-Type: application/json')
             ->setBody($jsonData);
+    }
+
+    /**
+     * @param $formId integer
+     *
+     * @return array
+     */
+    public function getData($formId)
+    {
+        $form = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
+
+        //Instanciate fieldset Model and get all fieldset for the requested form
+        $fieldsets = Mage::getModel('formbuilder/fieldset')->getCollection()->addFieldToFilter('form_id', $formId)->setOrder('tstamp', 'desc')->getData();
+
+        foreach ($fieldsets as &$fieldset) {
+            $elements = Mage::getModel('formbuilder/element')->getCollection()->addFieldToFilter('fieldset_id', $fieldset['fieldset_id'])->setOrder('sort_order', 'desc')->getData();
+            //add options to selectbox elements
+            foreach ($elements as $key => $element) {
+                if ($element['type'] == 'select') {
+                    $options = Mage::getModel('formbuilder/option')->getCollection()->addFieldToFilter('element_id', $element['element_id'])->setOrder('sort_order', 'desc')->getData();
+                    $elements[$key]['options'] = $options;
+                }
+            }
+
+            //add the elements to the fieldset
+            $fieldset['elements'] = $elements;
+        }
+
+        //add the fieldset to the form
+        $form[0]['fieldsets'] = $fieldsets;
+        return $form;
     }
 }

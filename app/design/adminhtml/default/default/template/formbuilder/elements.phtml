@@ -3,7 +3,7 @@
         <strong>Elements</strong>
 
         <div class="draggable fieldset" style="margin:15px 5px;">
-            <!--fieldset start-->
+            <!--fieldset_start-->
             <div class="box" id="fieldsetTemplate">
                 <fieldset class="fieldset formElement">
                     <legend>Legend</legend>
@@ -14,13 +14,13 @@
                     </div>
                 </fieldset>
             </div>
-            <!--fieldset end-->
+            <!--fieldset_end-->
         </div>
         <div class="draggable" style="margin:15px 5px;">
             <!--input start-->
-            <div class="box" id="inputFieldTemplate">
+            <div class="box" id="textFieldTemplate">
                 <label class="label">Voornaam</label>
-                <input type="text"/ name="voornaam" class="formElement" value="bas">
+                <input type="text" name="voornaam" class="formElement" value="bas">
             </div>
             <!--input end-->
         </div>
@@ -38,26 +38,48 @@
             <div class="box" id="selectFieldTemplate">
                 <label class="label"></label>
                 <select class="formElement">
-                    <option value="1">First</option>
-                    <option value="2">Second</option>
-                    <option value="3">Third</option>
+                    <option value="">Placeholder</option>
                 </select>
             </div>
             <!--select end-->
         </div>
         <div class="draggable" style="margin:15px 5px;clear:both">
             <!--radio start-->
-            <div class="box">
+            <div class="box" id="radioFieldTemplate">
                 <input type="radio" name="" value="" class="formElement"><label class="label"></label>
             </div>
+
             <!--radio end-->
         </div>
         <div class="input-box draggable">
             <!--checkbox start-->
-            <div class="box">
+            <div class="box" id="checkboxFieldTemplate">
                 <input type="checkbox" class="formElement" value="1" name="is_subscribed" id="is_subscribed" checked="checked" autocomplete="off">
             </div>
             <!--checkbox end-->
+        </div>
+
+
+        <!--SPECIAL PRE_DEFINED ELEMENTS-->
+        <div class="draggable">
+            <!-- date start-->
+            <div class="box dateFieldTemplate">
+                <label><?php echo $this->__('day'); ?></label>
+                <select name="day">
+                    <option value=""></option>
+                    <?php echo $this->fillDays(); ?>
+                </select>
+                <label><?php echo $this->__('month'); ?></label>
+                <select name="month">
+                    <?php echo $this->fillMonths(); ?>
+                </select>
+                <label><?php echo $this->__('year'); ?></label>
+                <select name="year">
+                    <option value="">----</option>
+                    <?php echo $this->fillYears(); ?>
+                </select>
+            </div>
+            <!-- date end-->
         </div>
     </div>
 </div>

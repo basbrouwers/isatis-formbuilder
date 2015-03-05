@@ -1,6 +1,6 @@
 <div class="column2">
 
-    <form name="editForm" id="editFormAttributes"  action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveForm") ?>">
+    <form name="editForm" id="editFormAttributes" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveForm") ?>">
         <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
         <input type="hidden" id="form_id" name="form_id" value=""/>
 
@@ -19,9 +19,9 @@
         <div class="column">
             <strong>Form Template</strong>
 
-            <select name="form_subtemplate">
-                <option value="1">1 column</option>
-                <option value="2">2 columns</option>
+            <select name="form_subtemplate" id="form_subtemplate_select">
+                <option value="1column">1 column</option>
+                <option value="2column">2 columns</option>
             </select>
         </div>
         <div class="column">
@@ -33,10 +33,11 @@
     </form>
     <div class="column" id="editFormFieldSuccess">&nbsp;</div>
 
-    <div class="formcontainter" id="formcontainer">
-            <div class="droppable">
+    <div class="formcontainer" id="page-1">
+        <div class="droppable">
 
-            </div>
+        </div>
+
     </div>
 </div>
 <form id="sortOrderForm" method="post" name="sortOrderForm" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveSortOrder") ?>?isAjax=true">
@@ -52,38 +53,75 @@
             <input type="hidden" id="element_id" name="element_id" value=" "/>
             <input type="hidden" id="element_type" name="element_type" value=" "/>
             <input type="hidden" id="element_sort_order" name="element_sort_order" value=" "/>
+            <input type="hidden" id="pagenumber" name="pagenumber" value=" "/>
+            <input type="hidden" name="validation" value=" "/>
 
-
-            <!--========================GENERAL fields======================-->
-            <div id="generalFormElements" class="formRow">
-                <label for="elementName">Name: </label><input type="text" name="element_name" id="elementName" class="nameEntry"/>
-            </div>
-
-            <!--==========================FIELDSET================================-->
-            <div id="fieldsetFormElements" class="formRow">
-                <label for="elementValue">Legend: </label><input type="text" name="element_legend" id="elementLegend" class="fieldsetEntry"/>
-            </div>
-
-            <!--===========================INPUT==============================-->
-            <div id="inputFormElements" class="formRow">
-                <label for="elementLabel">Label: </label><input type="text" name="element_label" id="elementLabel" class="valueEntry"/><br/>
-                <label for="elementValue">Value: </label><input type="text" name="element_value" id="elementValue" class="valueEntry"/>
-            </div>
-
-            <!--=========================SELECT===========================-->
-            <div id="selectFormElements">
-                <strong>Voeg de options voor de selectbox toe</strong><br/>
-            </div>
+            <!-- form editing fields are inserted here -->
 
             <button id="elementSubmit" title="Opslaan" type="submit" class="scalable task">
                 <span>Opslaan</span>
             </button>
             <div id="error"></div>
+
         </form>
 
     </div>
 </div>
 
+<!--these div's are only used to build the editing form and are never shown on their own-->
+
+<div class="hidden">
+
+    <div id="1column">
+        <div class="droppable">
+
+        </div>
+    </div>
+
+    <div id="2column">
+        <div class="col1">
+            <div class="droppable"></div>
+        </div>
+        <div class="col2">
+            <div class="droppable"></div>
+        </div>
+    </div>
+
+    <!--========================GENERAL fields======================-->
+    <div id="generalFormElements" class="formRow">
+        <label for="elementName">Name: </label><input type="text" name="element_name" id="elementName" class="nameEntry"/><br/>
+        <label for="elementLabel">Label: </label><input type="text" name="element_label" id="elementLabel" class="valueEntry"/><br/>
+        <label for="elementValue">Value: </label><input type="text" value="" name="element_value" id="elementValue" class="valueEntry"/><br/>
+    </div>
+
+    <!--==========================FIELDSET================================-->
+    <div id="fieldsetFormElements" class="formRow fieldset">
+        <label for="elementValue">Legend: </label><input type="text" name="element_legend" id="elementLegend" class="fieldsetEntry"/><br/>
+    </div>
+
+    <!--===========================TEXT==============================-->
+    <div id="textFormElements" class="formRow">
+
+    </div>
+
+    <!--=========================SELECT===========================-->
+    <div id="selectFormElements">
+
+        <strong>Voeg de options voor de selectbox toe</strong><br/>
+
+        <div id="selectoptions"></div>
+    </div>
+    <!--======================RADIOBUTTON===========================-->
+    <div id="radioELements">
+        RADIOOOOO
+    </div>
+    <!--======================CHECKBOX===========================-->
+    <div id="checkboxELements">
+        CHECKBOXXXXXED
+    </div>
+
+
+</div>
 
 
 

@@ -17,6 +17,12 @@
             <formbuilder>
                 <class>Isatis_Formbuilder_Helper</class>
             </formbuilder>
+            <filewriter>
+                <class>Isatis_Formbuilder_Helper_Filewriter</class>
+            </filewriter>
+            <componentConfigurator>
+                <class>Isatis_Formbuilder_Helper</class>
+            </componentConfigurator>
         </helpers>
         <models>
             <formbuilder>

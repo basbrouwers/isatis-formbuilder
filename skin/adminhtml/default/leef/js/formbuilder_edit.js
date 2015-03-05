@@ -41,6 +41,8 @@ form = {
 
         //set id of the form
         $j('#editFormAttributes input[name=form_id]').val(form.data.form_id);
+        //set the id of the form for the publish function
+        $j('#publish_form_id').val(form.data.form_id);
 
         //set pageTemplate
         $j('select[name=form_template]').val(form.data.template);
@@ -53,19 +55,6 @@ form = {
             form.addFieldSet(value);
         });
 
-       /* //make dropped elements sortable in main area
-        $j('#formcontainerMainArea').sortable({
-            helper: 'clone',
-            start: function (event, ui) {
-                $(ui.item).data("startindex", ui.item.index());
-            },
-            stop: function (event, ui) {
-                console.log('adsfadfafaf');
-
-                leef.calculateSortOrder(ui.item);
-            }
-        }),*/
-
         $j('.droppable').droppable(droptions);
     },
 
@@ -74,66 +63,100 @@ form = {
      * @param fieldset json object containing all info for the fieldset
      */
     addFieldSet: function (fieldset) {
-        //fetch template code from elements column
+        //check if the page where the fieldset is to be added already exists. If not add page
+
+        if(!$j('#page-'+fieldset.pagenumber).length) {
+            //add the page
+            var newPage = $j('#page-1').clone();
+            $j(newPage).children('not:last').remove();
+            $j(newPage).attr('id','page-'+fieldset.pagenumber);
+            $j('#page-'+(fieldset.pagenumber-1)).after(newPage);
+        }
+
+        //fetch template code from elements
         fieldsetTemplate = $j('#fieldsetTemplate').clone();
 
         //set id attribute of the fieldset
-        fieldsetTemplate.find('fieldset').attr('id',fieldset.fieldset_id);
+        fieldsetTemplate.find('fieldset').attr('id', fieldset.fieldset_id);
 
         //set the id of the sortable element so we can refer to it when needed
-        fieldsetTemplate.find('.sortable').attr('id','sortable_'+fieldset.fieldset_id);
+        fieldsetTemplate.find('.sortable').attr('id', 'sortable_' + fieldset.fieldset_id);
         //set legend text
         $j(fieldsetTemplate).children().find('legend').text(fieldset.legend);
 
         //loop through the fields in this fieldset and add them
         $j(fieldset.elements).each(function (index, value) {
-            form.addElement(fieldsetTemplate,value);
+            form.addElement(fieldsetTemplate, value);
         })
 
-        //add the edit and remove buttons
-        var container  = '<div>' + $j(fieldsetTemplate).get(0).outerHTML+ '<div class=" btn-icon btn-edit" id="element-">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div></div>';
+        //add the edit and remove buttons voor added element
+        var container = '<div>' + $j(fieldsetTemplate).get(0).outerHTML + '<div class="btn-icon btn-edit"">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div></div>';
 
+        $j('#page-'+fieldset.pagenumber).prepend(container);
         //enable sorting for this fieldset
-
-        $j('#formcontainer').prepend(container);
-        $j('#formcontainer .sortable').sortable({helper:'clone',
+        $j('.formcontainer .sortable').sortable({
             helper: 'clone',
-            start: function (event, ui) {
-                $(ui.item).data("startindex", ui.item.index());
+            onDragStart: function (event, ui) {
+                ui.item.find('.btn-icon').hide();
             },
-            stop: function (event, ui) {
-                leef.updateSortOrder(event,ui);
-            }});
+            update: function (event, ui) {
+                leef.updateSortOrder(event, ui);
+                $j(ui.item).find('.btn-icon').show();
+            }
+        });
     },
 
-    addElement: function (fieldset,element) {
+    addElement: function (fieldset, element) {
         //determine type
-        var elementType= element.type.toLowerCase();
+        var elementType = element.type.toLowerCase();
 
         //get templateCode for element
-        elementCode = $j('#'+elementType+'FieldTemplate').clone();
+        var elementCode = $j('#' + elementType + 'FieldTemplate').clone();
 
         //configure type specific settings
         switch (elementType) {
-            case 'input' :
+            case 'text' :
                 elementCode = form.configureInput(elementCode, element);
-               break;
+                break;
+            case 'select':
+                elementCode = form.configureSelect(elementCode, element);
+                break;
+            default :
+                elementCode = form.configureElement(elementCode, element);
+                break;
         }
 
+
         //place the code in a formRow div.
-        container  = '<div class="formRow" id="element_'+element.element_id+'">' + $j(elementCode).get(0).outerHTML+ '<div class=" btn-icon btn-edit" id="element-">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div></div>';
+        container = '<div class="formRow" id="element_' + element.element_id + '">' + $j(elementCode).get(0).outerHTML + '<div class="btn-icon btn-edit" id="element-">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div></div>';
 
         //add it to the active fieldset
         $j(fieldset).find('.sortable').prepend(container);
-
-
     },
-    configureInput: function(elementCode, element) {
+
+    configureElement: function(elementCode, element){
         $j(elementCode).find('label').text(element.label);
         return elementCode;
+    },
+    configureInput: function (elementCode, element) {
+        $j(elementCode).find('label').text(element.label);
+        return elementCode;
+    },
+    configureSelect: function (elementCode, element) {
+        $j(elementCode).find('label').text(element.label);
+        selectbox = $j(elementCode).find('select');
+
+        //remove the placeholder option
+        selectbox[0].firstElementChild.remove();
+
+        selectbox.attr('id', element.element_id);
+        $j(element.options).each(function () {
+            $j(selectbox).append('<option id="' + this.option_id + '" value="' + this.value + '">' + this.value + '</option>');
+        })
+        $j(elementCode).find('select').html(selectbox.html());
+        return $j(elementCode);
+
     }
-
-
 
 }
 

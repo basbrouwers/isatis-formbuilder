@@ -22,6 +22,9 @@
     background-size: 20px 20px;
 }
 
+.hidden {
+    display:none;
+}
 #editFormFieldSuccess {
     background: url(images/checkbox.png) no-repeat 100% 0;
     background-size: 20px 20px;
@@ -31,13 +34,27 @@
 
 }
 
-.formcontainter {
+.formcontainer {
     width: 100%;
     border: 1px solid #a9a9a9;
     float: right;
     clear: none;
     min-height: 500px;
+}
 
+div.col1 {
+    float: left;
+    width: 48%;
+    overflow: hidden;
+    margin:5px;
+
+}
+
+div.col2 {
+    float: right;
+    width: 48%;
+    overflow: hidden;
+    margin:5px;
 }
 
 .draggable {
@@ -45,13 +62,13 @@
 }
 
 .droppable {
-    height: 35px;
-    clear: both;
-    background-color: #eeeeee;
+    min-height: 35px;
+
+    border: 1px dashed #bcbcbc;
 }
 
 .drop-hover {
-    border: 1px dashed #bcbcbc;
+    border: 1px dashed #545454;
 
 }
 
@@ -121,12 +138,12 @@ legend {
 
 .column1 {
     float: left;
-    width: 20%;
+    width: 25%;
 }
 
 .column2 {
     float: right;
-    width: 80%
+    width: 75%
 }
 
 .box {
@@ -164,263 +181,33 @@ span.message {
     background-position: 0px 0px;
     background-repeat: no-repeat;
 }
-
+input[type=submit] {
+    background: url("images/btn_bg.gif") repeat-x scroll 0 100% #ffac47;
+    border-color: #ed6502 #a04300 #a04300 #ed6502;
+    border-style: solid;
+    border-width: 1px;
+    color: #fff;
+    cursor: pointer;
+    font: bold 12px arial,helvetica,sans-serif;
+    padding: 1px 7px 2px;
+    text-align: center !important;
+    white-space: nowrap;
+}
 /* --- inputs --- */
 /***** input holder *****/
 .input {
-    height: 32px;
+    height: 3px;
     float: left;
 }
 
-.input.small {
-    height: 22px;
+input[type=text], textarea, input[type=password], select {
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid #adadad;
+    color:#000;
 }
 
-.input.big {
-    height: 40px;
-}
 
-.input.bigger {
-    height: 100px;
-}
 
-.input.front.validation-passed {
-    background-position: 0 -636px;
-}
 
-.input.back.validation-passed {
-    background-position: 100% -636px;
-}
-
-.input.front.validation-failed {
-    background-position: 0 -740px;
-}
-
-.input.back.validation-failed {
-    background-position: 100% -740px;
-}
-
-.input.front.focus {
-    background-position: 0 -844px;
-}
-
-.input.back.focus {
-    background-position: 100% -844px;
-}
-
-.input.front.small {
-    background-position: 0 -938px;
-}
-
-.input.back.small {
-    background-position: 100% -938px;
-}
-
-.input.front.small.validation-passed {
-    background-position: 0 -1022px;
-}
-
-.input.back.small.validation-passed {
-    background-position: 100% -1022px;
-}
-
-.input.front.small.validation-failed {
-    background-position: 0 -1106px;
-}
-
-.input.back.small.validation-failed {
-    background-position: 100% -1106px;
-}
-
-.input.front.small.focus {
-    background-position: 0 -1190px;
-}
-
-.input.back.small.focus {
-    background-position: 100% -1190px;
-}
-
-.input.front.big {
-    background-position: 0 -60px;
-}
-
-.input.back.big {
-    background-position: 100% -60px;
-}
-
-.input.front.big.validation-passed {
-    background-position: 0 -180px;
-}
-
-.input.back.big.validation-passed {
-    background-position: 100% -180px;
-}
-
-.input.front.big.validation-failed {
-    background-position: 0 -300px;
-}
-
-.input.back.big.validation-failed {
-    background-position: 100% -300px;
-}
-
-.input.front.big.focus {
-    background-position: 0 -420px;
-}
-
-.input.back.big.focus {
-    background-position: 100% -420px;
-}
-
-.input.front.bigger {
-    background-position: 0 -1352px;
-}
-
-.input.back.bigger {
-    background-position: 100% -1352px;
-}
-
-.input.front.bigger.validation-passed {
-    background-position: 0 -1592px;
-}
-
-.input.back.bigger.validation-passed {
-    background-position: 100% -1592px;
-}
-
-.input.front.bigger.validation-failed {
-    background-position: 0 -1832px;
-}
-
-.input.back.bigger.validation-failed {
-    background-position: 100% -1832px;
-}
-
-.input.front.bigger.focus {
-    background-position: 0 -2072px;
-}
-
-.input.back.bigger.focus {
-    background-position: 100% -2072px;
-}
-
-/***** input *****/
-.input input,
-.input select, textarea {
-    font-family: 'Open Sans', Arial, sans-serif;
-    height: 28px;
-    margin: 0;
-    padding: 0 12px;
-    border: 1px solid #ccc;
-    float: left;
-    border-radius: 5px
-}
-
-.input select {
-    height: 32px;
-    padding: 4px 0 4px 10px;
-}
-
-.input.validation-passed input {
-    background-position: 100% -584px;
-}
-
-.input.validation-passed select {
-    background-position: -778px -584px;
-}
-
-.input.validation-failed input,
-.input.validation-failed select {
-    background-position: 100% -688px;
-}
-
-.input.focus input,
-.input.focus select {
-    background-position: 100% -792px;
-}
-
-.input.small input {
-    height: 18px;
-    background-position: 0 -896px;
-}
-
-.input.small select {
-    height: 22px;
-    padding: 0 6px;
-    background-position: 0 -896px;
-}
-
-.input.small.validation-passed input {
-    background-position: 100% -980px;
-}
-
-.input.small.validation-passed select {
-    background-position: -790px -980px;
-}
-
-.input.small.validation-failed input,
-.input.small.validation-failed select {
-    background-position: 100% -1064px;
-}
-
-.input.small.focus input,
-.input.small.focus select {
-    background-position: 100% -1148px;
-}
-
-.input.big input {
-    height: 36px;
-    background-position: 0 0;
-}
-
-.input.big select {
-    height: 40px;
-    background-position: 0 0;
-}
-
-.input.big.validation-passed input {
-    background-position: 100% -120px;
-}
-
-.input.big.validation-passed select {
-    background-position: -790px -120px;
-}
-
-.input.big.validation-failed input,
-.input.big.validation-failed select {
-    background-position: 100% -240px;
-}
-
-.input.big.focus input,
-.input.big.focus select {
-    background-position: 100% -360px;
-}
-
-.input.bigger textarea {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 13px;
-    height: 88px;
-    margin: 0 12px;
-    padding: 6px 0;
-    border: 1px solid #ccc;
-    resize: none;
-    float: left;
-}
-
-.input.bigger.validation-passed textarea {
-    background-position: 100% -1472px;
-}
-
-.input.bigger.validation-failed textarea {
-    background-position: 100% -1712px;
-}
-
-.input.bigger.focus textarea {
-    background-position: 100% -1952px;
-}
-
-input.readonly {
-    color: #888;
-    background: #f2f2f2;
-}
 

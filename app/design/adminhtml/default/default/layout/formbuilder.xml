@@ -23,14 +23,23 @@
                 <name>../leef/js/formbuilder.js</name>
             </action>
             <action method="addItem">
+                <type>skin_js</type>
+                <name>../leef/js/lib/underscore.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>../leef/js/lib/backbone.js</name>
+            </action>
+
+            <action method="addItem">
                 <type>skin_css</type>
                 <name>../leef/isa_formbuilder.css</name>
             </action>
         </reference>
         <reference name="content">
-                <block type="isatis_formbuilder/myform" name="formbuilderHeader" template="formbuilder/header.phtml"/>
-                <block type="isatis_formbuilder/myform" name="element" template="formbuilder/elements.phtml"/>
-            </reference>
+            <block type="isatis_formbuilder/myform" name="formbuilderHeader" template="formbuilder/header.phtml"/>
+            <block type="isatis_formbuilder/myform" name="element" template="formbuilder/elements.phtml"/>
+        </reference>
     </formbuilder>
 
     <formbuilder_adminhtml_index_index>
@@ -41,7 +50,7 @@
     </formbuilder_adminhtml_index_index>
 
     <formbuilder_adminhtml_index_editform>
-        <update handle="formbuilder" />
+        <update handle="formbuilder"/>
         <reference name="head">
             <action method="addItem">
                 <type>skin_js</type>
