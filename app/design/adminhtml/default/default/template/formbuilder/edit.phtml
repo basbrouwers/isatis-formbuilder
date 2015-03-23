@@ -1,118 +1,70 @@
-<div class="column2">
+<div class="rightcolumn">
     <form name="editForm" id="editFormAttributes" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveForm") ?>">
         <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
         <input type="hidden" id="form_id" name="form_id" value=""/>
 
         <div class="column">
-            <label for="formname">Name:</label><input type="text" name="form_title"/>
+            <label for="formname"><?php echo $this->__('Name');?></label><input type="text" name="form_title"/>
         </div>
         <div class="column">
-            <strong>Page Template</strong>
-            <select name="form_template">
-                <option value="1">standard</option>
-                <option value="2">Full width</option>
-                <option value="3">only Right</option>
-            </select>
+            <label><?php echo $this->__('Receiver');?></label><input type="text" name="form_receiver" id="form_receiver"/>
         </div>
 
         <div class="column">
-            <strong>Form Template</strong>
+            <label><?php echo $this->__('Form Template');?></label>
 
-            <select name="form_subtemplate">
+            <select name="form_subtemplate" id="'subtemplate-select">
                 <option value="1">1 column</option>
                 <option value="2">2 columns</option>
             </select>
         </div>
+
         <div class="column">
-
-            <input id="formsubmit" name="save" value="Opslaan" type="submit" class="scalable task"/>
-    </form>
-    <form method="post" action="<?php echo Mage::helper('adminhtml')->getUrl('/adminhtml_index/publishForm'); ?>">
-        <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
-        <input type="hidden" name="publish_form_id" id="publish_form_id" value="">
-        <button id="formpublish" name="publish" type="submit"><span><?php echo $this->__('Publish'); ?></span></button>
+            <input id="formsubmit" name="save" value="<?php echo $this->__('Save');?>" type="submit" class="scalable task"/>
+        </div>
     </form>
 
-</div>
-<div class="column" id="editFormFieldSuccess">&nbsp;</div>
-
-<div class="formcontainer" id="page-1">
-    <div class="droppable" id="formcontainerMainArea">
-
-    </div>
-    <div style="float:right" class="btnAddPageWrap">
-
-        <button class="right btnAddpage"><span name="addpage">Add Page</span></button>
-    </div>
-</div>
-
-<div id="formFieldEditor" class="fieldeditor-section">
-    <div id="editForm">
-        <strong>Edit element properties</strong>
-
-        <form name="editElement" id="editFormField" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveElement") ?>">
+    <div class="column">
+        <form method="post" class="nonAjax" action="<?php echo Mage::helper('adminhtml')->getUrl('/adminhtml_index/publishForm'); ?>">
             <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
-            <input type="hidden" name="parent_id" id="parent_id" value="">
-            <input type="hidden" id="element_id" name="element_id" value=" "/>
-            <input type="hidden" id="element_type" name="element_type" value=" "/>
-            <input type="hidden" id="element_sort_order" name="element_sort_order" value=" "/>
-            <input type="hidden" id="pagenumber" name="pagenumber" value=" "/>
-            <input type="hidden" name="validation" value=" "/>
-
-            <!-- Form editing fields are inserted here -->
-            `
-            <button id="elementSubmit" title="Opslaan" type="submit" class="scalable task">
-                <span>Opslaan</span>
-            </button>
-
-            <div id="error"></div>
-
+            <input type="hidden" name="publish_form_id" id="publish_form_id" value="">
+            <button id="formpublish" name="publish" type="submit"><span><?php echo $this->__('Publish'); ?></span></button>
         </form>
-
-    </div>
-</div>
-
-<!--these div's are only used to build the editing form and are never shown on their own-->
-<div class="hidden">
-    <!--========================GENERAL fields======================-->
-    <div id="generalFormElements" class="formRow">
-        <label for="elementName">Name: </label><input type="text" name="element_name" id="elementName" class="nameEntry"/><br/>
-        <label for="elementLabel">Label: </label><input type="text" name="element_label" id="elementLabel" class="valueEntry"/><br/>
-        <label for="elementValue">Value: </label><input type="text" value="" name="element_value" id="elementValue" class="valueEntry"/><br/>
     </div>
 
-    <!--==========================FIELDSET================================-->
-    <div id="fieldsetFormElements" class="formRow fieldset">
-        <label for="elementValue">Legend: </label><input type="text" name="element_legend" id="elementLegend" class="fieldsetEntry"/><br/>
-    </div>
+    <div class="column" id="editFormFieldSuccess">&nbsp;</div>
 
-    <!--===========================TEXT==============================-->
-    <div id="textFormElements" class="formRow">
+    <div class="formcontainer" id="page-1">
 
     </div>
 
-    <!--=========================SELECT===========================-->
-    <div id="selectFormElements">
-        <strong>Voeg de options voor de selectbox toe</strong><br/>
-
-        <div id="selectoptions"></div>
+    <div style="float:right" class="btnAddPageWrap">
+        <button class="right btnAddpage"><span name="addpage"><?php echo $this->__('Add Page');?></span></button>
     </div>
-    <!--======================RADIOBUTTON===========================-->
-    <div id="radioFormElements">
-        RADIOOOOO
+
+    <div id="formFieldEditor" class="fieldeditor-section">
+        <div id="editForm">
+            <strong><?php echo $this->__('Edit element properties');?></strong>
+
+            <form name="editElement" id="editFormField" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveElement") ?>">
+                <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+                <input type="hidden" name="parent_id" id="parent_id" value="">
+                <input type="hidden" name="parent_type" id="parent_type" value="">
+
+                <input type="hidden" id="element_id" name="element_id" value=" "/>
+                <input type="hidden" id="element_type" name="element_type" value=" "/>
+                <input type="hidden" id="element_sort_order" name="element_sort_order" value=" "/>
+                <input type="hidden" id="pagenumber" name="pagenumber" value=" "/>
+                <input type="hidden" name="validation" value=" "/>
+
+                <!-- Form editing fields are inserted here -->
+
+                <div id="elementSubmit" class="formRow"><br/>
+                    <button id="" title="Opslaan" type="submit" class="scalable task block">
+                        <span><?php echo $this->__('Save');?></span>
+                    </button>
+                </div>
+                <div id="error"></div>
+            </form>
+        </div>
     </div>
-    <!--======================CHECKBOX===========================-->
-    <div id="checkboxFormElements">
-        CHECKBOXXXXXED
-    </div>
-</div>
-
-<form id="sortOrderForm" method="post" class="nonAjax" name="sortOrderForm" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveSortOrder") ?>?isAjax=true">
-    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
-</form>
-<form id="removeElementForm" method="post" class="nonAjax" name="removeElementForm" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/removeElement") ?>?isAjax=true">
-    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
-</form>
-
-
-

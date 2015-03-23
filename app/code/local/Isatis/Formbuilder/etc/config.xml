@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <config>
-
     <modules>
         <Isatis_Formbuilder>
             <version>0.1.0</version>
@@ -41,9 +40,13 @@
                     <element>
                         <table>isa_formbuilder_element</table>
                     </element>
+                    <groupelement>
+                        <table>isa_formbuilder_group_element</table>
+                    </groupelement>
                     <option>
                         <table>isa_formbuilder_select_option</table>
                     </option>
+
                 </entities>
             </formbuilder_resource>
         </models>

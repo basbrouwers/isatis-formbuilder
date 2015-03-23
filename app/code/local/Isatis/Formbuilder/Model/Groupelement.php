@@ -6,12 +6,12 @@
  * Time: 10:42 AM
  */
 
-class Isatis_Formbuilder_Model_Option extends Mage_Core_Model_Abstract {
+class Isatis_Formbuilder_Model_Groupelement extends Mage_Core_Model_Abstract {
 
     protected function _construct()
     {
         parent::_construct();
-        $this->_init('formbuilder/option');
+        $this->_init('formbuilder/groupelement');
     }
 
 }

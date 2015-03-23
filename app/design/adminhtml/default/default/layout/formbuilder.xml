@@ -23,15 +23,6 @@
                 <name>../leef/js/formbuilder.js</name>
             </action>
             <action method="addItem">
-                <type>skin_js</type>
-                <name>../leef/js/lib/underscore.js</name>
-            </action>
-            <action method="addItem">
-                <type>skin_js</type>
-                <name>../leef/js/lib/backbone.js</name>
-            </action>
-
-            <action method="addItem">
                 <type>skin_css</type>
                 <name>../leef/isa_formbuilder.css</name>
             </action>
@@ -45,9 +36,19 @@
     <formbuilder_adminhtml_index_index>
         <update handle="formbuilder"/>
         <reference name="content">
-            <block type="isatis_formbuilder/myform" name="myform" template="formbuilder/index.phtml"/>
+            <block type="isatis_formbuilder/myform" name="myform" template="formbuilder/edit.phtml"/>
+            <block type="isatis_formbuilder/myform" name="editfields" template="formbuilder/editfields.phtml"/>
+
         </reference>
     </formbuilder_adminhtml_index_index>
+
+    <formbuilder_adminhtml_index_publishform>
+        <update handle="formbuilder"/>
+        <reference name="content">
+            <remove name="element" />
+            <block type="isatis_formbuilder/myform" name="publishForm" template="formbuilder/publish.phtml"/>
+        </reference>
+    </formbuilder_adminhtml_index_publishform>
 
     <formbuilder_adminhtml_index_editform>
         <update handle="formbuilder"/>
@@ -59,6 +60,7 @@
         </reference>
         <reference name="content">
             <block type="isatis_formbuilder/edit_form" name="editform" template="formbuilder/edit.phtml"/>
+            <block type="isatis_formbuilder/edit_form" name="editfields" template="formbuilder/editfields.phtml"/>
         </reference>
     </formbuilder_adminhtml_index_editform>
 

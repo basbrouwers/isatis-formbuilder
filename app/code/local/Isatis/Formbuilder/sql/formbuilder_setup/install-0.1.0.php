@@ -28,11 +28,11 @@ $formTable = $installer->getConnection()->newTable($installer->getTable('formbui
         'unsigned' => true,
         'nullable' => false
     ), 'Form Template')
-    ->addColumn('action', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+    ->addColumn('receiver', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
         'nullable' => false,
         ''
     ), 'Action')
-    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+    ->addColumn('sendmethod', Varien_Db_Ddl_Table::TYPE_LONGVARCHAR, null, array(
         'nullable' => false,
     ), 'Sort order')
     ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
@@ -64,19 +64,23 @@ $fieldsetTable = $installer->getConnection()->newTable($installer->getTable('for
         'nullable' => false,
         ''
     ), 'Legend')
+    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Sort order')
     ->addColumn('pagenumber', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'unsigned' => true,
         ''
     ), 'Pagenumber')
+    ->addColumn('column', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Columnr')
     ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
     ), 'Creation date')
-    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-        'nullable' => false,
-    ), 'Sort order')
+
     ->addIndex('INDEX_FORM','form_id');
 
 $installer->getConnection()->createTable($fieldsetTable);
@@ -96,6 +100,11 @@ $elementTable = $installer->getConnection()->newTable($installer->getTable('form
         'unsigned' => true,
         'nullable' => false,
     ), 'Form ID')
+    ->addColumn(
+        'parent_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'unsigned' => true,
+        'nullable' => true,
+    ), 'Parent ID')
     ->addColumn('name', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
         'nullable' => false), 'Name')
     ->addColumn('value', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
@@ -109,19 +118,60 @@ $elementTable = $installer->getConnection()->newTable($installer->getTable('form
         'nullable' => true
     ), 'Type'
     )
+    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Sort order')
+    ->addColumn('required', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Required')
+    ->addColumn('validationrule', Varien_Db_Ddl_Table::TYPE_LONGVARCHAR, null, array(
+        'nullable' => false,
+    ), 'Validation rule')
+    ->addColumn('placeholder', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+        'nullable' => false,
+    ), 'Placeholder')
     ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
     ), 'Creation date')
-    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-        'nullable' => false,
-    ), 'Sort order')
+
     ->addIndex('INDEX_FIELDSET','fieldset_id');
 
 
-$installer->getConnection()->createTable($elementTable);
+$groupElementTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/groupelement'))
+    ->addColumn('groupelement_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+    'unsigned' => true,
+    'nullable' => false,
+    'primary' => true,
+    'identity' => true
+), 'ID')
+    ->addColumn(
+        'element_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'unsigned' => true,
+        'nullable' => false,
+    ), 'Element ID')
+    ->addColumn('name', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+        'nullable' => false), 'Name')
+    ->addColumn('value', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+        'nullable' => true
+    ), 'Value')
+    ->addColumn('label', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+        'nullable' => true
+    ), 'Label')
+    ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
+        'nullable' => false,
+    ), 'Sort order')
+    ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
+        'nullable' => false,
+    ), 'Last updated')
+    ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
+        'nullable' => false,
+    ), 'Creation date')
+    ->addIndex('INDEX_GROUELEMENT','groupelement_id');
+
+$installer->getConnection()->createTable($groupElementTable);
 
 /*==================================OPTION=================================================== */
 $optionTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/option'))
