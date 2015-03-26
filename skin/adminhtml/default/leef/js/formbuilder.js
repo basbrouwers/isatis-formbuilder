@@ -50,7 +50,7 @@ var leef = {
 
         //add the validation rules to the editor
         leef.addValidationRules();
-
+        $j('.leftcolumn').stick_in_parent();
         //make dropped elements sortable in main area
         $j('.formcontainerMainArea').sortable({
             helper: 'clone',
@@ -58,6 +58,11 @@ var leef = {
                 leef.updateSortOrder(event, ui.item);
             }
         }),
+
+            $j('body').on('click','.dependencyTrigger label', function(event, ui){
+                $j(this).siblings('.dependent').slideToggle();
+            })
+
             //add a sortupdate event so we can trigger the sorting update event manually
             $j('.sortable').on('sortupdate', function (event, element) {
                 leef.updateSortOrder('', element);
@@ -69,6 +74,7 @@ var leef = {
             $j('body').on('click', '.btn-remove', function () {
                 leef.removeElement(this);
             }),
+
             //enable duplicate button
             $j('body').on('click', '.btn-duplicate', function () {
                 leef.duplicateElement(this);
@@ -93,10 +99,8 @@ var leef = {
                 leef.addPage();
             }),
 
-            $j('#anchor-content').on('click', 'fieldset .formRow', function (event,ui) {
-
-                $j(this).find('.btn-icon').toggle(250).css('display', 'inline-block');
-
+            $j('#anchor-content').on('click', '.box label', function (event, ui) {
+                $j(this).parent().parent().siblings('.editbuttons').slideToggle().css('display', 'inline-block');
             }),
 
             $j('#form_subtemplate_select').on('change', function () {
@@ -115,6 +119,8 @@ var leef = {
                 //be called in magento
                 var url = $j(this).attr('action') + 'isAjax=true';
                 var data = $j(this).serialize();
+                console.log(data);
+
 
                 //submit the form data through ajax call (post data)
                 $j.post(url, data, function (response) {
@@ -146,12 +152,16 @@ var leef = {
                             } else {
                                 //we submitted the form
                                 leef.displayMessage(response.message);
-                                //set the columns in the main form area to the number that was chosen for the form
-                                $j('#page-1').empty();
-                                $j('#page-1').append($j('#' + response.form_subtemplate + 'column').html());
 
-                                //configure droppable area
-                                $j('.droppable').droppable(droptions);
+                                //chcek if we need to add the first column div. This is only needed when building a new form.
+                                if ($j('#page-1').find($j('.column' + response.form_subtemplate)).length == 0) {
+                                    //set the columns in the main form area to the number that was chosen for the form
+                                    $j('#page-1').empty();
+                                    $j('#page-1').append($j('#' + response.form_subtemplate + 'column').html());
+
+                                    //configure droppable area
+                                    $j('.droppable').droppable(droptions);
+                                }
                             }
                         } else {
                             leef.displayError(response.message);
@@ -230,15 +240,19 @@ var leef = {
 
         $j(droppedElement).find('.box').removeAttr('id');
 
-        var container = '<div class="editbuttons">' + droppedElement + '<div class="btn-icon btn-edit">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div><div class="btn-icon btn-duplicate">&nbsp;</div></div>';
+        var container = '<div>' + droppedElement + '</div><div class="editbuttons"><div class="btn-icon btn-edit">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div><div class="btn-icon btn-duplicate">&nbsp;</div></div>';
 
 
-        if(droppedElement.indexOf('fieldset')==-1 && droppedElement.indexOf('group'))  {
-            container +='<div class="tab"><div class="droppable hidden-droppable"></div></div>';
+        if (droppedElement.indexOf('fieldset') == -1 && droppedElement.indexOf('group')) {
+            container += '<div class="tab sortable"><div class="droppable hidden-droppable"></div></div>';
+            //new element added so we need to make sure the sortorder is calculated
+            //newElementAdded is used after submitting the editform to determine if sorting is needed
+            leef.newElementAdded = true;
         }
         $j(container).appendTo(droparea);
 
-        //make sure all items are sortable, including the new added item
+
+        //make sure all items are sortable, including the newly added item
         $j(droparea).find('.sortable').sortable({
             helper: 'clone',
             update: function (event, ui) {
@@ -247,14 +261,13 @@ var leef = {
             }
         });
 
-        //new element added so we need to make sure the sortorder is calculated
-        //newElementAdded is used after submitting the editform to determine if sorting is needed
-        leef.newElementAdded = true;
 
         //open the edit window so user can configure the element
         //default argument for the edit function is the edit button that was clicked.
         //In this case no button was clicked so we pas the edit-button 'by hand'
-        setTimeout(function(){leef.editElement($j(droparea).children().find('.btn-edit'));},500);
+        setTimeout(function () {
+            leef.editElement($j(droparea).children().find('.btn-edit'));
+        }, 200);
     },
 
     /**
@@ -308,17 +321,21 @@ var leef = {
      */
     editElement: function (button) {
         //determine element type and determine what fields to display
-        var element = $j(button).parent().find('.formElement');
+
+        var element = $j(button).parent().parent().find('.formElement');
+        console.log(element);
+        
 
         leef.activeField = element;
 
         var elementType = element.attr('data-element-type');
         //set the parent_id of the element to the id parent element
-        leef.determineParent(element, elementType);
+        var parentElementType = leef.determineParent(element, elementType);
 
         //init formfield editor
-        leef.initFormFieldEditor(elementType, function (formfields) {
-            data = $j('#formFieldEditor').clone(true);
+        formfields = leef.initFormFieldEditor(elementType,parentElementType);
+
+            var data = $j('#formFieldEditor').clone(true);
             data.find('#elementSubmit').before(formfields);
             data = data.show();
 
@@ -328,12 +345,17 @@ var leef = {
                     leef.updateFormElement(event.target);
                 },
                 onClose: function () {
-                    //data.destroy();
+                    data.destroy();
                 }
             });
-        });
     },
 
+    /**
+     *
+     * @param element
+     * @param elementType
+     * @returns string
+     */
     determineParent: function (element, elementType) {
         switch (elementType) {
             case 'fieldset' :
@@ -341,12 +363,15 @@ var leef = {
                 $j('#parent_id').val($j('#form_id').val());
                 break;
             default :
-                    //other elements are always child of an element, be it a fieldset or another element
-                    $j('#parent_id').val($j(element).closest('.formRow').parent().closest('.formRow').attr('id'));
-                    $j('#parent_type').val($j(element).closest('.formRow').parent().closest('.formRow').find('.formElement').attr('data-element-type'));
+                //other elements are always child of an element, be it a fieldset or another formelement
+                $j('#parent_id').val($j(element).closest('.formRow').parent().closest('.formRow').attr('id'));
+                parentElementType = $j(element).closest('.formRow').parent().closest('.formRow').find('.formElement').attr('data-element-type');
+                $j('#parent_type').val(parentElementType);
+                return parentElementType;
                 break;
         }
     },
+
     /**
      * Function adds an extra option to a dropdown.
      * @param button
@@ -357,21 +382,19 @@ var leef = {
         //add the new option field to the selectbox
     },
 
-
     addRadioToGroup: function (button) {
 
     },
-
 
     /**
      * Builds the editor for altering the attributes of an input field
      * @param {jQuery}elementType
      * @param callback
      */
-    initFormFieldEditor: function (elementType, callback) {
+    initFormFieldEditor: function (elementType,parentElementType, callback) {
         var elementsToShow = '#' + elementType.toLowerCase() + 'FormElements';
-        var formfields = $j("#generalFormElements").clone();
 
+        var formfields = $j("#generalFormElements").clone();
 
         //set id of element in hidden field of the form
         if (leef.newElementAdded) {
@@ -380,11 +403,12 @@ var leef = {
             $j('#element_id').val(leef.activeField.closest('.formRow').attr('id'));
         }
 
-        //set the name
-        $j('#elementName').val(leef.activeField.find(':input').first().attr('name'));
-
         //set the element type
         $j('#element_type').val(elementType);
+
+
+        $j('#elementName').attr('value',leef.getElementName());
+
 
         switch (elementType) {
             case 'fieldset':
@@ -397,23 +421,30 @@ var leef = {
                 break;
 
             case 'select':
+                //label field
                 $j('#elementLabel').attr('value', leef.activeField.find('label').text());
+                formfields.append($j('#labelEditField').clone());
+
                 $j('#selectoptions').empty();
+
                 $j('#selectoptions').append('<span><strong>Options</strong></span><br>');
 
                 //get the options from the selectbox
                 leef.activeField.find('select > option').each(function () {
-                    $j('#selectoptions').append('<input class="formElement selectoption"  name="options[]" value="' + $j(this).text() + '" type="text"/><br />');
+                    $j('#selectoptions').append('<input class="formElement selectoption"  name="option[' + $j(this).attr('id') + ']" value="' + $j(this).text() + '|' + $j(this).val() + '" type="text"/><br />');
                 });
 
                 //add the plus button so user can add more options
-                $j("#selectoptions").append('<div class="btn-plus">&nbsp;</div>');
+                $j('#selectoptions').append('<div class="btn-plus">&nbsp;</div>');
                 $j('#selectoptions').show();
+
+                formfields.append($j('#selectEditField').clone());
                 break;
 
             case 'label':
                 $j('#elementLabel').attr('value', leef.activeField.find('label').text());
                 formfields.append($j('#labelEditField').clone());
+                $j('#elementName').attr('value',leef.activeField.find('label').first().attr('name'));
                 break;
 
             case 'infobox':
@@ -433,7 +464,7 @@ var leef = {
 
                 //value field
                 $j('#elementValue').attr('value', leef.activeField.find(':input').first().val());
-                formfields.append($j('#lvalueEditField').clone());
+                formfields.append($j('#valueEditField').clone());
                 break;
 
             case 'textarea':
@@ -448,6 +479,7 @@ var leef = {
                 break;
 
             case 'radio':
+            case 'checkbox':
                 $j('#elementLabel').attr('value', leef.activeField.find('label').text());
                 formfields.append($j('#labelEditField').clone());
 
@@ -459,21 +491,22 @@ var leef = {
                 formfields.append($j('#customHTMLEditField').clone());
                 break;
 
-            case 'radiogroup':
+            case 'group':
                 $j('#elementLabel').attr('value', leef.activeField.find('label').text());
                 formfields.append($j('#labelEditField').clone());
-                formfields.append('<div class="btn-plus-radio">&nbsp;</div>');
-
                 break;
+
             case 'yes-no':
                 //get label text
                 $j('#elementLabel').attr('value', leef.activeField.find('label').first().text());
                 formfields.append($j('#labelEditField'));
                 break;
         }
+        formfields.prepend($j('#generalEditFields').clone());
 
-        $j('#elementName').attr('value', leef.activeField.find(':input').first().attr('name'));
-
+        if(parentElementType=='checkbox' || parentElementType=='radio') {
+            formfields.append($j('#parentDependencyEditField').clone());
+        }
 
         //check if field is required
         if (leef.activeField.hasClass('required-entry')) {
@@ -481,10 +514,20 @@ var leef = {
         }
 
 
-        $j(formfields).show();
-        if ($j.isFunction(callback)) {
-            callback(formfields);
+        //$j(formfields).show();
+
+            return formfields;
+    },
+
+
+    getElementName: function(){
+        var name = '';
+        name = leef.activeField.find(':input').first().attr('name');
+        if(!name) {
+            name = leef.activeField.find('div').first().attr('name');
         }
+
+        return name;
     },
 
     /**

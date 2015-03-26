@@ -20,6 +20,10 @@
             </action>
             <action method="addItem">
                 <type>skin_js</type>
+                <name>../leef/js/lib/sticky.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
                 <name>../leef/js/formbuilder.js</name>
             </action>
             <action method="addItem">
@@ -28,16 +32,16 @@
             </action>
         </reference>
         <reference name="content">
-            <block type="isatis_formbuilder/myform" name="formbuilderHeader" template="formbuilder/header.phtml"/>
-            <block type="isatis_formbuilder/myform" name="element" template="formbuilder/elements.phtml"/>
+            <block type="isatis_formbuilder/adminhtml_form" name="formbuilderHeader" template="formbuilder/header.phtml"/>
+            <block type="isatis_formbuilder/adminhtml_form" name="element" template="formbuilder/elements.phtml"/>
         </reference>
     </formbuilder>
 
     <formbuilder_adminhtml_index_index>
         <update handle="formbuilder"/>
         <reference name="content">
-            <block type="isatis_formbuilder/myform" name="myform" template="formbuilder/edit.phtml"/>
-            <block type="isatis_formbuilder/myform" name="editfields" template="formbuilder/editfields.phtml"/>
+            <block type="isatis_formbuilder/adminhtml_form" name="form" template="formbuilder/edit.phtml"/>
+            <block type="isatis_formbuilder/adminhtml_form" name="editfields" template="formbuilder/editfields.phtml"/>
 
         </reference>
     </formbuilder_adminhtml_index_index>
@@ -46,7 +50,7 @@
         <update handle="formbuilder"/>
         <reference name="content">
             <remove name="element" />
-            <block type="isatis_formbuilder/myform" name="publishForm" template="formbuilder/publish.phtml"/>
+            <block type="isatis_formbuilder/adminhtml_form" name="publishForm" template="formbuilder/publish.phtml"/>
         </reference>
     </formbuilder_adminhtml_index_publishform>
 

@@ -110,9 +110,10 @@ form = {
         //loop through the elements in this fieldset and add them
         $j(fieldset.elements).each(function (index, value) {
             newElement = form.addElement(value);
+
             if (fieldset.fieldset_id != value.parent_id) {
                 //element is child of another element
-                $j(fieldsetTemplate).find('#element_'+value.parent_id).after('<div class="childElement">'+newElement+'</div>');
+                $j(fieldsetTemplate).find('#element_'+value.parent_id).append('<div class="childElement">'+newElement+'</div>');
 
             } else {
                 $j(fieldsetTemplate).find('.sortable').prepend(newElement);
@@ -185,7 +186,10 @@ form = {
         }
 
         //place the code in a formRow div.
-        var container = '<div class="formRow" data-sort-order=' + element.sort_order + ' id="element_' + element.element_id + '">' + $j(elementCode).get(0).outerHTML + '<div class="btn-icon btn-edit" id="edit-element-' + element.element_id + '">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div><div class="btn-icon btn-duplicate">&nbsp;</div></div>';
+        var container = '<div class="formRow" data-sort-order=' + element.sort_order + ' id="element_' + element.element_id + '"><div>' + $j(elementCode).get(0).outerHTML + '</div><div class="editbuttons"><div class="btn-icon btn-edit" id="edit-element-' + element.element_id + '">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div><div class="btn-icon btn-duplicate">&nbsp;</div></div>';
+        if(elementType!='fieldset' && elementType!='group')  {
+            container +='<div class="tab"><div class="droppable hidden-droppable"></div></div>';
+        }
 
         return container;
     },
@@ -248,7 +252,6 @@ form = {
     },
 
     configureInput: function (elementCode, element) {
-
         return elementCode;
     },
     configureSelect: function (elementCode, element) {
@@ -260,7 +263,7 @@ form = {
 
         selectbox.attr('id', element.element_id);
         $j(element.options).each(function () {
-            $j(selectbox).append('<option id="' + this.option_id + '" value="' + this.value + '">' + this.value + '</option>');
+            $j(selectbox).append('<option id="option_' + this.option_id + '" value="' + this.value + '">' + this.label + '</option>');
         })
 
         $j(elementCode).find('select').html(selectbox.html());

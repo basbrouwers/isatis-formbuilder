@@ -92,6 +92,8 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
     {
         $start = strpos($value, '_') + 1;
         $value = substr($value, intval($start));
+        $result = $value;
+        return $result;
     }
 
     /**
@@ -112,13 +114,15 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         }
 
 
-        /** @var $elementModel Isatis_Formbuilder_Model_Element */
-        $elements = Mage::getModel('formbuilder/element')->getCollection()->addFieldToFilter('element_id', array('in' => array_keys($sortOrder)));
+        /** @var $element Isatis_Formbuilder_Model_Element */
+        $element = Mage::getModel('formbuilder/element');
 
-        foreach ($elements as $element) {
-            $element->setSortOrder($sortOrder[$element->getElementId()]);
+        foreach ($sortOrder as $key => $value) {
+
             try {
-                $element->save();
+                $element->load($key)->setSortOrder($value)->save();
+
+
             } catch (Exception $e) {
                 $post['error'] = true;
                 $post['message'] = $e->getMessage();
@@ -246,6 +250,11 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             $element->setPlaceholder($post['element_placeholder']);
             $element->setSortorder($post['element_sort_order']);
             $element->setTstamp(time());
+            if(isset($post['element_parentdependency'])) {
+            $element->setParentdependency(1);
+                } else {
+                $element->setParentdependency(0);
+            }
 
             $element->save();
 
@@ -253,12 +262,27 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             $post['element_id'] = $element->getId();
 
             //check if we need to save additional fields
+
             if ($post['element_type'] == 'select') {
                 //save the options for the selectbox
                 $optionModel = Mage::getModel('formbuilder/option');
-                foreach ($post['option'] as $optionData) {
-                    $optionModel->setElement_id($element->getId());
-                    $optionModel->setValue($optionData);
+
+                
+                foreach ($post['option'] as $option_id=>$optionData) {
+                    if ($option_id) {
+                        $optionModel->load($this->getCleanId($option_id));
+                    }
+                        $optionModel->setElementId($element->getId());
+
+                    if (strpos($optionData, '|')) {
+                        $optionData = explode('|', $optionData);
+                        $optionModel->setLabel($optionData[0]);
+                        $optionModel->setValue($optionData[1]);
+                    } else {
+                        $optionModel->setValue($optionData);
+                    }
+
+
                     $optionModel->setTstamp(time());
                     $optionModel->save();
                     $optionModel->unsetData();
@@ -343,7 +367,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
                 ->setOrder('sort_order', 'desc')
                 ->getData();
 
-            
+
             //add options to selectbox elements
             foreach ($elements as $key => $element) {
                 if ($element['type'] == 'select') {
@@ -371,7 +395,6 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
 
     public function postFormAction()
     {
-
         $post = $this->getRequest()->getPost();
 
         $data = '';
@@ -385,12 +408,11 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
                             $data .= '&nbsp;&nbsp;&nbsp;&nbsp;' . $key . ': ' . $val . '<br />';
                         }
                     } else {
-                        $data .= $name . ':' . $value . '<br />';
+                        $data .= '<strong>'.$name . ':</strong>' . $value . '<br />';
                     }
                 }
             }
         }
-
         echo $data;
     }
 
