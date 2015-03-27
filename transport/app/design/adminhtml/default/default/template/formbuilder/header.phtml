@@ -1,0 +1,24 @@
+<div id="formbuilder_header" class="content-header" xmlns="http://www.w3.org/1999/html">
+    <h3 class="icon-head">Formbuilder</h3><span id="error" class="error" style="float:right"></span><span id="message" class="message" ></span>
+    <form method="post" name="formSelector" id="formSelector" class="nonAjax" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/editForm") ?>">
+        <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+        <select name="selected_form_id" id="selected_form_id">
+            <?php
+            $forms = $this->getAllForms();
+            $activeForm = $this->getActiveForm();
+
+            foreach ($forms as $form) {
+                echo '<option value=' . $form->getId().' ';
+                if($form->getId()==$activeForm){echo 'selected="selected" ';}
+                echo '>' . $form->getTitle() . '</option>';
+
+            }
+            ?>
+        </select>
+        <button type="submit"><span>Load</span></button>
+    </form>
+    <form name="getForm" id="getFormData"  class="nonAjax" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/getFormData") ?>">
+        <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+        <input type="hidden" id="requested_form_id" name="requested_form_id" value="<?php echo $this->getActiveForm();?>"/>
+    </form>
+</div>
