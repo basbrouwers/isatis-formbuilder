@@ -395,6 +395,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
 
     public function postFormAction()
     {
+
         $post = $this->getRequest()->getPost();
 
         $data = '';

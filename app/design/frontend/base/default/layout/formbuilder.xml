@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<layout>
+    <formbuilder>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/lib/jquery-1.11.2.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/lib/jquery-ui/jquery-ui.min.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/lib/featherlight.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/lib/sticky.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/isatis_formbuilder/formbuilder.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_css</type>
+                <name>isa_formbuilder.css</name>
+            </action>
+        </reference>
+    </formbuilder>
+
+    <formbuilder_index_index>
+        <update handle="formbuilder"/>
+        <reference name="content">
+            <block type="isatis_formbuilder/form" name="form" template="formbuilder/edit.phtml"/>
+            <block type="isatis_formbuilder/form" name="editfields" template="formbuilder/editfields.phtml"/>
+        </reference>
+    </formbuilder_index_index>
+
+    <formbuilder_index_publishform>
+        <update handle="formbuilder"/>
+        <reference name="content">
+            <remove name="element"/>
+            <block type="isatis_formbuilder/form" name="publishForm" template="formbuilder/publish.phtml"/>
+        </reference>
+    </formbuilder_index_publishform>
+
+</layout>

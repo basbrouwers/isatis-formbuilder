@@ -124,4 +124,24 @@
 
     </adminhtml>
 
+    <frontend>
+        <routers>
+            <formbuilder>
+                <use>standard</use>
+                <args>
+                    <module>Isatis_Formbuilder</module>
+                    <frontname>formbuilder</frontname>
+                </args>
+            </formbuilder>
+        </routers>
+
+        <layout>
+            <updates>
+                <formbuilder>
+                    <file>formbuilder.xml</file>
+                </formbuilder>
+            </updates>
+        </layout>
+    </frontend>
+
 </config>

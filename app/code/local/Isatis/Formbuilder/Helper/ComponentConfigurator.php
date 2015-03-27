@@ -206,7 +206,15 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $textInput->setAttribute('id', 'element-' . $fieldData['element_id']);
         $textInput->setAttribute('value', $fieldData['value']);
         $textInput->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
-
+        if($fieldData['validationrule']!='') {
+            $textInput->setAttribute('class',$textInput->getAttribute('class').' '. $fieldData['validationrule']);
+        }
+        if($fieldData['required']==1) {
+            $textInput->setAttribute('class',$textInput->getAttribute('class').' '. 'required-entry');
+        }
+        if($fieldData['placeholder']!='') {
+            $textInput->setAttribute('placeholder',$fieldData['placeholder']);
+        }
         //configure the label.
         $this->configureLabel($fieldData, $wrappingDiv);
 
@@ -264,7 +272,12 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $textarea->setAttribute('id', 'element-' . $fieldData['element_id']);
         $textarea->setAttribute('value', $fieldData['value']);
         $textarea->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
-
+        if($fieldData['validationrule']!='') {
+            $textarea->setAttribute('class',$textarea->getAttribute('class').' '. $fieldData['validationrule']);
+        }
+        if($fieldData['required']==1) {
+            $textarea->setAttribute('class',$textarea->getAttribute('class').' '. 'required-entry');
+        }
         //configure the label.
         $this->configureLabel($fieldData, $wrappingDiv);
         return $wrappingDiv;
@@ -283,6 +296,9 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $textInput->setAttribute('id', 'element-' . $fieldData['element_id']);
         $textInput->setAttribute('value', $fieldData['value']);
         $textInput->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
+        if($fieldData['validationrule']!='') {
+            $textInput->setAttribute('class', $fieldData['validationrule']);
+        }
 
         //configure the label.
         $this->configureLabel($fieldData, $wrappingDiv);
@@ -329,7 +345,9 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
     {
         $label = $wrappingDiv->getElementsByTagName('label')->item(0);
         $label->setAttribute('for', 'element-' . $fieldData['element_id']);
-
+        if($fieldData['required']) {
+            $label->setAttribute('class', 'required-entry');
+        }
         $label->nodeValue = $fieldData['label'];
 
     }
