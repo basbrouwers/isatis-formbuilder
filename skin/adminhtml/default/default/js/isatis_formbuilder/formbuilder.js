@@ -119,8 +119,6 @@ var leef = {
                 //be called in magento
                 var url = $j(this).attr('action') + 'isAjax=true';
                 var data = $j(this).serialize();
-                console.log(data);
-
 
                 //submit the form data through ajax call (post data)
                 $j.post(url, data, function (response) {
@@ -324,7 +322,7 @@ var leef = {
 
         var element = $j(button).parent().parent().find('.formElement');
         console.log(element);
-
+        
 
         leef.activeField = element;
 
@@ -409,6 +407,10 @@ var leef = {
 
         $j('#elementName').attr('value',leef.getElementName());
 
+        //check if field is required
+        if (leef.activeField.find(':input').first().hasClass('required-entry')) {
+            $j('#element_required').attr('checked', true);
+        }
 
         switch (elementType) {
             case 'fieldset':
@@ -508,10 +510,7 @@ var leef = {
             formfields.append($j('#parentDependencyEditField').clone());
         }
 
-        //check if field is required
-        if (leef.activeField.hasClass('required-entry')) {
-            $j('#element_required').attr('checked', true);
-        }
+
 
 
         //$j(formfields).show();
@@ -630,7 +629,4 @@ var leef = {
 //perform initialization once document is loaded
 $j(function () {
     leef.init();
-
-    var customForm = new VarienForm('formbuilder-form');
-
 });
