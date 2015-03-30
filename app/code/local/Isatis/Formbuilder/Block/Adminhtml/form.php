@@ -31,7 +31,6 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
         $post = Mage::app()->getRequest()->getPost();
         $form_id = false;
 
-
         if (isset($post['selected_form_id']) && $post['selected_form_id'] != '') {
             $form_id = $post['selected_form_id'];
         } else {
@@ -91,13 +90,17 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
         //fetch the id of the form
         $post = Mage::app()->getRequest()->getPost();
         $form_id = null;
+
         if (isset($post['publish_form_id']) && $post['publish_form_id'] != '') {
             $form_id = $post['publish_form_id'];
+        } else {
+            $error = "No form id found";
+            throw new Exception($error);
         }
 
-        $formData = $this->getData($form_id);
-        $formData = $this->transposeArray($formData, 'element_id');
+        $formData = $this->getFormData($form_id);
 
+        $formData = $this->transposeArray($formData, 'element_id');
 
         /** @var Isatis_Formbuilder_Helper_ComponentConfigurator $formConfigurator */
         $formConfigurator = Mage::helper('formbuilder/ComponentConfigurator');
@@ -127,6 +130,8 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
             //close the page div
             $formHTML .= '</div>';
         }
+
+
 
         return $formHTML;
     }
@@ -183,7 +188,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
      * @return array
      */
     public
-    function getData($formId, $sorting = 'asc')
+    function getFormData($formId, $sorting = 'asc')
     {
         $form = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
 

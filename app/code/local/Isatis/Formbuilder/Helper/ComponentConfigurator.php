@@ -20,7 +20,8 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
     public function __construct()
     {
         //load the template file containing the form elements
-        $this->template = file_get_contents(Mage::getBaseDir('design') . DS . 'adminhtml' . DS . 'default' . DS . 'default' . DS . 'template' . DS . 'formbuilder' . DS . 'elements.phtml');
+        $this->template = file_get_contents(Mage::getBaseDir('design') . DS . 'adminhtml' . DS . 'base' . DS . 'default' . DS . 'template' . DS . 'formbuilder' . DS . 'elements.phtml');
+
         $this->dom = new domDocument();
         libxml_use_internal_errors(true);
 
@@ -60,20 +61,13 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         //loop through the form elements belonging to the fieldset and append them
         foreach ($fieldsetData['elements'] as $element) {
             $elementCode = $this->configureField($element);
-        
-
-
 
             if (isset($element['childElements'])) {
 
                 $childElementCode = '';
                 foreach ($element['childElements'] as $childElement) {
-
-
                     $childElementCode = $this->appendChild($childElement);
 
-
-                    
                     if ($childElement['parentdependency'] == 1) {
                         $childElementCode->setAttribute('class', 'dependent');
                     }
@@ -316,7 +310,9 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $checkbox->setAttribute('id', 'element-' . $fieldData['element_id']);
         $checkbox->setAttribute('value', $fieldData['value']);
         $checkbox->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
-
+        if($fieldData['required']==1) {
+            $checkbox->setAttribute('class',$checkbox->getAttribute('class').' '. 'required-entry');
+        }
         //configure the label.
         $this->configureLabel($fieldData, $wrappingDiv);
         return $wrappingDiv;

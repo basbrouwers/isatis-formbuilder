@@ -79,9 +79,7 @@ $fieldsetTable = $installer->getConnection()->newTable($installer->getTable('for
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
-    ), 'Creation date')
-
-    ->addIndex('INDEX_FORM','form_id');
+    ), 'Creation date');
 
 $installer->getConnection()->createTable($fieldsetTable);
 
@@ -112,32 +110,33 @@ $elementTable = $installer->getConnection()->newTable($installer->getTable('form
     ), 'Value')
     ->addColumn('label', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
         'nullable' => true
-    ), 'Label'
-    )
+    ), 'Label')
     ->addColumn('type', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
         'nullable' => true
-    ), 'Type'
-    )
+    ), 'Type')
     ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'nullable' => false,
     ), 'Sort order')
     ->addColumn('required', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-        'nullable' => false,
+        'nullable' => true,
     ), 'Required')
     ->addColumn('validationrule', Varien_Db_Ddl_Table::TYPE_LONGVARCHAR, null, array(
-        'nullable' => false,
+        'nullable' => true,
     ), 'Validation rule')
     ->addColumn('placeholder', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
-        'nullable' => false,
+        'nullable' => true,
     ), 'Placeholder')
+    ->addColumn('parentdependency', Varien_Db_Ddl_Table::TYPE_SMALLINT, null, array(
+        'nullable' => true,
+    ), 'Parent dependency')
     ->addColumn('tstamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
-    ), 'Creation date')
+    ), 'Creation date');
 
-    ->addIndex('INDEX_FIELDSET','fieldset_id');
+$installer->getConnection()->createTable($elementTable);
 
 
 $groupElementTable = $installer->getConnection()->newTable($installer->getTable('formbuilder/groupelement'))
@@ -168,8 +167,8 @@ $groupElementTable = $installer->getConnection()->newTable($installer->getTable(
     ), 'Last updated')
     ->addColumn('crdate', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false,
-    ), 'Creation date')
-    ->addIndex('INDEX_GROUELEMENT','groupelement_id');
+    ), 'Creation date');
+
 
 $installer->getConnection()->createTable($groupElementTable);
 
@@ -201,8 +200,7 @@ $optionTable = $installer->getConnection()->newTable($installer->getTable('formb
     ), 'Creation date')
     ->addColumn('sort_order', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'nullable' => false,
-    ), 'Sort order')
-    ->addIndex('INDEX_ELEMENT','element_id');
+    ), 'Sort order');
 
 $installer->getConnection()->createTable($optionTable);
 
@@ -211,7 +209,7 @@ $installer->getConnection()->createTable($optionTable);
  * Add the forreign key constrains
  */
 $installer->getConnection()
-    ->addForeignKey('formFieldset',
+    ->addForeignKey('formFieldsetConstrain',
                     $installer->getTable('formbuilder/fieldset'),
                     'form_id',
                     $installer->getTable('formbuilder/form'),
@@ -221,7 +219,7 @@ $installer->getConnection()
     );
 
 $installer->getConnection()
-    ->addForeignKey('fieldsetElement',
+    ->addForeignKey('fieldsetElementConstrain',
                     $installer->getTable('formbuilder/element'),
                     'fieldset_id',
                     $installer->getTable('formbuilder/fieldset'),
@@ -232,7 +230,7 @@ $installer->getConnection()
 
 
 $installer->getConnection()
-    ->addForeignKey('elementOption',
+    ->addForeignKey('elementOptionConstrain',
                     $installer->getTable('formbuilder/option'),
                     'element_id',
                     $installer->getTable('formbuilder/element'),

@@ -4,37 +4,34 @@
         <reference name="head">
             <action method="addItem">
                 <type>skin_js</type>
-                <name>../leef/js/lib/jquery-1.11.2.js</name>
+                <name>js/isatis_formbuilder/lib/jquery-1.11.2.js</name>
             </action>
             <action method="addItem">
                 <type>skin_js</type>
-                <name>../leef/js/lib/jquery-ui/jquery-ui.min.js</name>
+                <name>js/isatis_formbuilder/lib/jquery-ui/jquery-ui.min.js</name>
+            </action>
+
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/isatis_formbuilder/lib/featherlight.js</name>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>js/isatis_formbuilder/formbuilder.js</name>
             </action>
             <action method="addItem">
                 <type>skin_css</type>
-                <name>../leef/featherlight.min.css</name>
-            </action>
-            <action method="addItem">
-                <type>skin_js</type>
-                <name>../leef/js/lib/featherlight.js</name>
-            </action>
-            <action method="addItem">
-                <type>skin_js</type>
-                <name>../leef/js/lib/sticky.js</name>
-            </action>
-            <action method="addItem">
-                <type>skin_js</type>
-                <name>../leef/js/formbuilder.js</name>
+                <name>isatis_formbuilder/isa_formbuilder.css</name>
             </action>
             <action method="addItem">
                 <type>skin_css</type>
-                <name>../leef/isa_formbuilder.css</name>
+                <name>isatis_formbuilder/featherlight.min.css</name>
             </action>
         </reference>
         <reference name="content">
-            <block type="isatis_formbuilder/adminhtml_form" name="formbuilderHeader" template="formbuilder/header.phtml"/>
-            <block type="isatis_formbuilder/adminhtml_form" name="element" template="formbuilder/elements.phtml"/>
-        </reference>
+                <block type="isatis_formbuilder/myform" name="formbuilderHeader" template="formbuilder/header.phtml"/>
+                <block type="isatis_formbuilder/myform" name="element" template="formbuilder/elements.phtml"/>
+            </reference>
     </formbuilder>
 
     <formbuilder_adminhtml_index_index>
@@ -42,7 +39,6 @@
         <reference name="content">
             <block type="isatis_formbuilder/adminhtml_form" name="form" template="formbuilder/edit.phtml"/>
             <block type="isatis_formbuilder/adminhtml_form" name="editfields" template="formbuilder/editfields.phtml"/>
-
         </reference>
     </formbuilder_adminhtml_index_index>
 
@@ -59,12 +55,13 @@
         <reference name="head">
             <action method="addItem">
                 <type>skin_js</type>
-                <name>../leef/js/formbuilder_edit.js</name>
+                <name>js/isatis_formbuilder/formbuilder_edit.js</name>
             </action>
         </reference>
+
         <reference name="content">
-            <block type="isatis_formbuilder/edit_form" name="editform" template="formbuilder/edit.phtml"/>
-            <block type="isatis_formbuilder/edit_form" name="editfields" template="formbuilder/editfields.phtml"/>
+            <block type="isatis_formbuilder/adminhtml_form" name="editform" template="formbuilder/edit.phtml"/>
+            <block type="isatis_formbuilder/adminhtml_form" name="editfields" template="formbuilder/editfields.phtml"/>
         </reference>
     </formbuilder_adminhtml_index_editform>
 

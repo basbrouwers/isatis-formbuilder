@@ -4,10 +4,10 @@
         <input type="hidden" id="form_id" name="form_id" value=""/>
 
         <div class="column">
-            <label for="formname"><?php echo $this->__('Name');?></label><input type="text" name="form_title"/>
+            <label for="formname"><?php echo $this->__('Name'); ?></label><input type="text" name="form_title"/>
         </div>
         <div class="column">
-            <label><?php echo $this->__('Form Template');?></label>
+            <label><?php echo $this->__('Form Template'); ?></label>
 
             <select name="form_subtemplate" id="'subtemplate-select">
                 <option value="1">1 column</option>
@@ -16,12 +16,12 @@
         </div>
 
         <div class="column">
-            <input id="formsubmit" name="save" value="<?php echo $this->__('Save');?>" type="submit" class="scalable task"/>
+            <input id="formsubmit" name="save" value="<?php echo $this->__('Save'); ?>" type="submit" class="scalable task"/>
         </div>
     </form>
 
     <div class="column">
-        <form method="post" class="nonAjax" action="<?php echo Mage::helper('adminhtml')->getUrl('/adminhtml_index/publishForm'); ?>">
+        <form method="post" class="nonAjax" action="<?php echo Mage::helper('adminhtml')->getUrl('/index/index'); ?>">
             <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
             <input type="hidden" name="publish_form_id" id="publish_form_id" value="">
             <button id="formpublish" name="publish" type="submit"><span><?php echo $this->__('Publish'); ?></span></button>
@@ -35,12 +35,12 @@
     </div>
 
     <div style="float:right" class="btnAddPageWrap">
-        <button class="right btnAddpage"><span name="addpage"><?php echo $this->__('Add Page');?></span></button>
+        <button class="right btnAddpage"><span name="addpage"><?php echo $this->__('Add Page'); ?></span></button>
     </div>
 
     <div id="formFieldEditor" class="fieldeditor-section">
         <div id="editForm">
-            <strong><?php echo $this->__('Edit element properties');?></strong>
+            <strong><?php echo $this->__('Edit element properties'); ?></strong>
 
             <form name="editElement" id="editFormField" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/saveElement") ?>">
                 <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
@@ -57,7 +57,7 @@
 
                 <div id="elementSubmit" class="formRow"><br/>
                     <button id="" title="Opslaan" type="submit" class="scalable task block">
-                        <span><?php echo $this->__('Save');?></span>
+                        <span><?php echo $this->__('Save'); ?></span>
                     </button>
                 </div>
                 <div id="error"></div>

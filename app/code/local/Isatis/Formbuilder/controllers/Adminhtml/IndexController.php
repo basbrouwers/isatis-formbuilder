@@ -27,9 +27,8 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         $form->setTitle($post['form_title']);
         $form->setSubtemplate($post['form_subtemplate']);
         $form->setReceiver($post['form_receiver']);
-
-
         $form->save();
+
         $post['form_id'] = $form->getId();
         $post['message'] = $this->__('Form saved succesfully');
 

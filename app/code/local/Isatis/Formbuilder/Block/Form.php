@@ -62,7 +62,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
             $form_id = $post['publish_form_id'];
         }
 
-        $formData = $this->getData(253);
+        $formData = $this->getData($form_id);
 
         $formData = $this->transposeArray($formData, 'element_id');
 
