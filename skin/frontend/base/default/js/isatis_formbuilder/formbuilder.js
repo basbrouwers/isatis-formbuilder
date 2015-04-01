@@ -42,10 +42,14 @@ var droptions = {
 var leef = {
 
     init: function () {
+        $j('body').on('click', '.dependencyTrigger>label', function (event, ui) {
 
-
-        $j('body').on('click', '.dependencyTrigger label', function (event, ui) {
-            $j(this).parent().find('.dependent').slideToggle();
+            
+            if($j(this).prev().prop('checked')) {
+                $j(this).parent().find('.dependent').slideUp();
+            } else {
+                $j(this).parent().find('.dependent').slideDown();
+            }
         })
     }
 

@@ -15,7 +15,7 @@
             }
             ?>
         </select>
-        <button type="submit"><span>Load</span></button>
+        <button type="submit"><span><?php echo $this->__('Load');?></span></button>
     </form>
     <form name="getForm" id="getFormData"  class="nonAjax" action="<?php echo Mage::helper("adminhtml")->getUrl("/adminhtml_index/getFormData") ?>">
         <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>

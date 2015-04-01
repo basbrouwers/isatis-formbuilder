@@ -8,7 +8,6 @@ $j = jQuery.noConflict();
 var form;
 var form_id;
 
-
 form = {
     id: null,
     data: null,
@@ -56,6 +55,7 @@ form = {
 
         //set formTemplate
         $j('select[name=form_subtemplate]').val(form.data.subtemplate);
+
 
         $j('#page-1').html($j('#' + form.data.subtemplate + 'column').html());
 
@@ -125,7 +125,7 @@ form = {
         var container = '<div class="formRow" data-sort-order=' + fieldset.sort_order + ' id="element_' + fieldset.fieldset_id + '">' + $j(fieldsetTemplate).get(0).outerHTML + '<div class="btn-icon btn-edit"">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div></div>';
 
 
-        //prepend the fileset in the correct column on the correct page
+        //prepend the fieldset in the correct column on the correct page
         $j('#page-' + fieldset.pagenumber + ' div.column' + fieldset.column).prepend(container);
 
         //enable sorting for this fieldset

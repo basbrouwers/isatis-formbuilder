@@ -8,30 +8,35 @@
  */
 class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
 {
+    var $formHierarchy = array();
+    var $validationResult = false;
+
+
     private function transposeArray($dataArray)
     {
-        $elementsArray = array();
-        $childElements = array();
+        $result = $dataArray;
+        unset($result['fieldsets']);
+
         foreach ($dataArray['fieldsets'] as $fieldsetKey => $fieldsetArray) {
-
-
+            $elementsArray = array();
+            $childElements = array();
+            //loop through the elements inside the fieldset
             foreach ($fieldsetArray['elements'] as $key => $element) {
 
+                //check if the element is a child of another element
                 if ($element['parent_id'] != $element['fieldset_id']) {
-
-
                     //this is a child element so we place it inside the parent
                     $childElements[$element['element_id']] = $element;
                 } else {
-
                     foreach ($element as $elementKey => $elementValue) {
                         $elementsArray[$element['element_id']][$elementKey] = $elementValue;
                     }
                 }
-
             }
-            krsort($childElements);
 
+
+
+            //add the child elements to their respective parent element
             foreach ($childElements as $childId => $childElement) {
                 if (isset($childElements[$childElement['parent_id']])) {
                     $childElements[$childElement['parent_id']]['childElements'][] = $childElement;
@@ -42,11 +47,14 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
             foreach ($childElements as $child) {
                 $elementsArray[$child['parent_id']]['childElements'][] = $child;
             }
+            
+            $result['fieldsets'][$fieldsetKey]=$fieldsetArray;
+            $result['fieldsets'][$fieldsetKey]['elements'] = $elementsArray;
 
-            $dataArray['fieldsets'][$fieldsetKey]['elements'] = $elementsArray;
         }
 
-        return $dataArray;
+
+        return $result;
     }
 
     /**
@@ -55,20 +63,26 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
      */
     public function publishForm()
     {
+        $this->validationResult = $this->getValidationData();
+        
         //fetch the id of the form
         $post = Mage::app()->getRequest()->getPost();
+
         $form_id = null;
-        if (isset($post['publish_form_id']) && $post['publish_form_id'] != '') {
-            $form_id = $post['publish_form_id'];
+
+        if (!isset($post['form_id']) || $post['form_id'] == '') {
+            throw new Exception('No form ID found');
         }
 
-        $formData = $this->getData($form_id);
+        $form_id = $post['form_id'];
+        $formData = $this->getFormData($form_id);
 
-        $formData = $this->transposeArray($formData, 'element_id');
-
+        $formData = $this->transposeArray($formData);
 
         /** @var Isatis_Formbuilder_Helper_ComponentConfigurator $formConfigurator */
         $formConfigurator = Mage::helper('formbuilder/ComponentConfigurator');
+        $formConfigurator->setValidationResult($this->validationResult);
+
 
         /**
          * @var $nodes array
@@ -76,6 +90,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
          * place each fieldset in the correct page
          */
         $nodes = array();
+
         foreach ($formData['fieldsets'] as $key => $fieldset) {
             $nodes[$fieldset['pagenumber']][$fieldset['column']][] = $formConfigurator->configureFieldset($fieldset);
         }
@@ -88,13 +103,19 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
 
             foreach ($column as $colNumber => $node) {
 
-                $formHTML .= '<div id="column' . $colNumber . '" class="col' . $colNumber . '"">';
+
+                $formHTML .= '<div id="column' . $colNumber . '" class="col' . $colNumber;
+                if($formData['subtemplate']==1){
+                    $formHTML .='-full';
+                }
+                $formHTML .='">';
                 $formHTML .= implode('', $node);
                 $formHTML .= '</div>';
             };
             //close the page div
             $formHTML .= '</div>';
         }
+
 
         return $formHTML;
     }
@@ -105,7 +126,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
      * @param string $sorting
      * @return array
      */
-    public function getData($formId, $sorting = 'asc')
+    public function getFormData($formId, $sorting = 'asc')
     {
         $form = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
 
@@ -139,13 +160,31 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
     {
         //fetch the id of the form
         $post = Mage::app()->getRequest()->getPost();
+
+        
         $formId = null;
-        if (isset($post['publish_form_id']) && $post['publish_form_id'] != '') {
-            $formId = $post['publish_form_id'];
+        if (isset($post['form_id']) && $post['form_id'] != '') {
+            $formId = $post['form_id'];
         }
         $formTitle = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
 
         return $formTitle[0]['title'];
+
+    }
+
+    private function buildHierarchy($fieldset)
+    {
+        $fieldsetHierarchy = array();
+        foreach($fieldset['elements'] as $key=>$element) {
+            if($element['parent_id']!=$element['fieldset_id']) {
+                //The element is not child of the fieldset but of another element so place it under the parent element
+                $fieldsetHierarchy[$element['parent_id']]['childElements'][] = $element;
+            } else {
+                $fieldsetHierarchy[$element['element_id']] = $element;;
+            }
+        }
+        
+        $this->formHierarchy[$fieldset['fieldset_id']] = $fieldsetHierarchy;
 
     }
 }

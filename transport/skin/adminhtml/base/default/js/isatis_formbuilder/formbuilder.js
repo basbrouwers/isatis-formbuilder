@@ -50,7 +50,7 @@ var leef = {
 
         //add the validation rules to the editor
         leef.addValidationRules();
-        $j('.leftcolumn').stick_in_parent();
+
         //make dropped elements sortable in main area
         $j('.formcontainerMainArea').sortable({
             helper: 'clone',

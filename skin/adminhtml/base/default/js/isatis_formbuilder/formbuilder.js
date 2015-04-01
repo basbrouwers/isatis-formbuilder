@@ -59,14 +59,14 @@ var leef = {
             }
         }),
 
-            $j('body').on('click','.dependencyTrigger label', function(event, ui){
+            $j('body').on('click', '.dependencyTrigger label', function (event, ui) {
                 $j(this).siblings('.dependent').slideToggle();
             })
 
-            //add a sortupdate event so we can trigger the sorting update event manually
-            $j('.sortable').on('sortupdate', function (event, element) {
-                leef.updateSortOrder('', element);
-            }),
+        //add a sortupdate event so we can trigger the sorting update event manually
+        $j('.sortable').on('sortupdate', function (event, element) {
+            leef.updateSortOrder('', element);
+        }),
             //enable draggables
             $j('.draggable').draggable({revert: "invalid", helper: "clone"}),
 
@@ -99,9 +99,9 @@ var leef = {
                 leef.addPage();
             }),
 
-            $j('#anchor-content').on('click', '.box label', function (event, ui) {
-                $j(this).parent().parent().siblings('.editbuttons').slideToggle().css('display', 'inline-block');
-            }),
+        $j('#anchor-content').on('click', '.box label', function (event, ui) {
+            $j(this).parent().parent().siblings('.editbuttons').slideToggle().css('display', 'inline-block');
+        }),
 
             $j('#form_subtemplate_select').on('change', function () {
                 leef.setSubTemplate($j(this).val());
@@ -322,7 +322,7 @@ var leef = {
 
         var element = $j(button).parent().parent().find('.formElement');
         console.log(element);
-        
+
 
         leef.activeField = element;
 
@@ -331,21 +331,21 @@ var leef = {
         var parentElementType = leef.determineParent(element, elementType);
 
         //init formfield editor
-        formfields = leef.initFormFieldEditor(elementType,parentElementType);
+        formfields = leef.initFormFieldEditor(elementType, parentElementType);
 
-            var data = $j('#formFieldEditor').clone(true);
-            data.find('#elementSubmit').before(formfields);
-            data = data.show();
+        var data = $j('#formFieldEditor').clone(true);
+        data.find('#elementSubmit').before(formfields);
+        data = data.show();
 
-            //assign our update functions to featherlights keydown event handler
-            $j.featherlight(data, {
-                onKeyDown: function (event) {
-                    leef.updateFormElement(event.target);
-                },
-                onClose: function () {
-                    data.destroy();
-                }
-            });
+        //assign our update functions to featherlights keydown event handler
+        $j.featherlight(data, {
+            onKeyDown: function (event) {
+                leef.updateFormElement(event.target);
+            },
+            onClose: function () {
+                data.destroy();
+            }
+        });
     },
 
     /**
@@ -389,10 +389,10 @@ var leef = {
      * @param {jQuery}elementType
      * @param callback
      */
-    initFormFieldEditor: function (elementType,parentElementType, callback) {
+    initFormFieldEditor: function (elementType, parentElementType, callback) {
         var elementsToShow = '#' + elementType.toLowerCase() + 'FormElements';
 
-        var formfields = $j("#generalFormElements").clone();
+
 
         //set id of element in hidden field of the form
         if (leef.newElementAdded) {
@@ -405,12 +405,14 @@ var leef = {
         $j('#element_type').val(elementType);
 
 
-        $j('#elementName').attr('value',leef.getElementName());
+        $j('#elementName').attr('value', leef.getElementName());
 
         //check if field is required
         if (leef.activeField.find(':input').first().hasClass('required-entry')) {
-            $j('#element_required').attr('checked', true);
+            $j('.element_required').attr('checked', true);
         }
+
+        var formfields = $j("#generalFormElements").clone();
 
         switch (elementType) {
             case 'fieldset':
@@ -446,7 +448,7 @@ var leef = {
             case 'label':
                 $j('#elementLabel').attr('value', leef.activeField.find('label').text());
                 formfields.append($j('#labelEditField').clone());
-                $j('#elementName').attr('value',leef.activeField.find('label').first().attr('name'));
+                $j('#elementName').attr('value', leef.activeField.find('label').first().attr('name'));
                 break;
 
             case 'infobox':
@@ -504,25 +506,23 @@ var leef = {
                 formfields.append($j('#labelEditField'));
                 break;
         }
-        formfields.prepend($j('#generalEditFields').clone());
+        formfields.prepend($j('#generalEditFields'));
 
-        if(parentElementType=='checkbox' || parentElementType=='radio') {
+        if (parentElementType == 'checkbox' || parentElementType == 'radio') {
             formfields.append($j('#parentDependencyEditField').clone());
         }
 
 
-
-
         //$j(formfields).show();
 
-            return formfields;
+        return formfields;
     },
 
 
-    getElementName: function(){
+    getElementName: function () {
         var name = '';
         name = leef.activeField.find(':input').first().attr('name');
-        if(!name) {
+        if (!name) {
             name = leef.activeField.find('div').first().attr('name');
         }
 

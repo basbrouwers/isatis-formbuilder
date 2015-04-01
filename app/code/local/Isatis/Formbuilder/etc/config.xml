@@ -81,7 +81,7 @@
             <modules>
                 <Isatis_Formbuilder>
                     <files>
-                        <default>formbuilder.csv</default>
+                        <default>Isatis_Formbuilder.csv</default>
                     </files>
                 </Isatis_Formbuilder>
             </modules>

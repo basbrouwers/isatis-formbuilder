@@ -13,7 +13,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
     var $xPath = '';
     var $currentPage = 1;
     var $currentFieldset = '';
-
+    var $validationResult = false;
     const DS = DIRECTORY_SEPARATOR;
 
 
@@ -33,13 +33,17 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         }
     }
 
-
+    public function setValidationResult($result){
+        $this->validationResult = $result;
+    }
     /**
      * @param $fieldsetData array containing all data needed for configuring field
      * @return string
      */
     public function configureFieldset($fieldsetData)
     {
+
+
         $this->currentFieldset = $fieldsetData['legend'];
 
 
@@ -58,8 +62,12 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         //$legend is a reference to legend dom element inside $wrappingDiv.
         $wrappingDiv->getElementsByTagName('legend')->item(0)->nodeValue = $fieldsetData['legend'];
 
+
         //loop through the form elements belonging to the fieldset and append them
         foreach ($fieldsetData['elements'] as $element) {
+
+
+
             $elementCode = $this->configureField($element);
 
             if (isset($element['childElements'])) {
@@ -71,6 +79,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
                     if ($childElement['parentdependency'] == 1) {
                         $childElementCode->setAttribute('class', 'dependent');
                     }
+
                     $elementCode->appendChild($childElementCode);
 
                     if ($childElement['parentdependency'] == 1) {
@@ -199,7 +208,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $textInput = $wrappingDiv->getElementsByTagName('input')->item(0);
         $textInput->setAttribute('id', 'element-' . $fieldData['element_id']);
         $textInput->setAttribute('value', $fieldData['value']);
-        $textInput->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
+        $textInput->setAttribute('name', $this->currentFieldset . '[' . $fieldData['name'] .'-'.$fieldData['element_id']. ']');
         if($fieldData['validationrule']!='') {
             $textInput->setAttribute('class',$textInput->getAttribute('class').' '. $fieldData['validationrule']);
         }
@@ -208,6 +217,9 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         }
         if($fieldData['placeholder']!='') {
             $textInput->setAttribute('placeholder',$fieldData['placeholder']);
+        }
+        if(isset($this->validationResult[$fieldData['element_id']])) {
+            $textInput->setAttribute('class',$textInput->getAttribute('class').' '. 'error');
         }
         //configure the label.
         $this->configureLabel($fieldData, $wrappingDiv);
@@ -227,11 +239,17 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
          */
         //clone the template element so we have a unique element to work with
         $wrappingDiv = $this->dom->getElementById('selectFieldTemplate')->cloneNode(true);
+        //remove the placeholder option
+        $select = $wrappingDiv->getElementsByTagName('select')->item(0);
+
+        
+
+        $select->removeChild($wrappingDiv->getElementsByTagName('option')->item(0));
 
         //configure the selectbox
         $selectbox = $wrappingDiv->getElementsByTagName('select')->item(0);
         $selectbox->setAttribute('id', 'element-' . $fieldData['element_id']);
-        $selectbox->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
+        $selectbox->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] .'-'.$fieldData['element_id'].  ']');
 
         $this->configureLabel($fieldData, $wrappingDiv);
         //add the options to the selectbox
@@ -265,7 +283,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $textarea = $wrappingDiv->getElementsByTagName('textarea')->item(0);
         $textarea->setAttribute('id', 'element-' . $fieldData['element_id']);
         $textarea->setAttribute('value', $fieldData['value']);
-        $textarea->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
+        $textarea->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] .'-'.$fieldData['element_id'].  ']');
         if($fieldData['validationrule']!='') {
             $textarea->setAttribute('class',$textarea->getAttribute('class').' '. $fieldData['validationrule']);
         }
@@ -289,7 +307,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $textInput = $wrappingDiv->getElementsByTagName('input')->item(0);
         $textInput->setAttribute('id', 'element-' . $fieldData['element_id']);
         $textInput->setAttribute('value', $fieldData['value']);
-        $textInput->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
+        $textInput->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] .'-'.$fieldData['element_id'].  ']');
         if($fieldData['validationrule']!='') {
             $textInput->setAttribute('class', $fieldData['validationrule']);
         }
@@ -309,7 +327,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $checkbox = $wrappingDiv->getElementsByTagName('input')->item(0);
         $checkbox->setAttribute('id', 'element-' . $fieldData['element_id']);
         $checkbox->setAttribute('value', $fieldData['value']);
-        $checkbox->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] . ']');
+        $checkbox->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] .'-'.$fieldData['element_id'].  ']');
         if($fieldData['required']==1) {
             $checkbox->setAttribute('class',$checkbox->getAttribute('class').' '. 'required-entry');
         }
@@ -365,7 +383,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $yesNoElement->replaceChild($newLabel, $oldLabel);
 
         foreach ($yesNoElement->getElementsByTagName('input') as $key => $input) {
-            $input->setAttribute('name', $this->currentFieldset . '[' . $fieldData['name'] . ']');
+            $input->setAttribute('name', $this->currentFieldset . '[' . $fieldData['name'] .'-'.$fieldData['element_id'].  ']');
         }
 
         return $yesNoElement;
@@ -382,7 +400,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $dropdowns = $wrappingDiv->getElementsByTagName('select');
 
         foreach ($dropdowns as $dropdown) {
-            $dropdown->setAttribute('name', $this->currentFieldset . '[' . $fieldData['name'] . '][' . $dropdown->getAttribute('name') . ']');
+            $dropdown->setAttribute('name', $this->currentFieldset . '[' . $fieldData['name'] . '][' . $dropdown->getAttribute('name') .'-'.$fieldData['element_id'].  ']');
         }
 
         //configure the label.

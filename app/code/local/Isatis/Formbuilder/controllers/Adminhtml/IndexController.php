@@ -36,7 +36,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type: application/json')
+            ->setHeader('Content-Type','application/json')
             ->setBody($jsonData);
     }
 
@@ -79,7 +79,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type: application/json')
+            ->setHeader('Content-Type','application/json')
             ->setBody($jsonData);
     }
 
@@ -133,7 +133,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type: application/json')
+            ->setHeader('Content-Type','application/json')
             ->setBody($jsonData);
     }
 
@@ -279,6 +279,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
                         $optionModel->setValue($optionData[1]);
                     } else {
                         $optionModel->setValue($optionData);
+                        $optionModel->setLabel($optionData);
                     }
 
 
@@ -325,7 +326,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type: application/json')
+            ->setHeader('Content-Type','application/json')
             ->setBody($jsonData);
     }
 
@@ -343,7 +344,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type: application/json')
+            ->setHeader('Content-Type','application/json')
             ->setBody($jsonData);
     }
 

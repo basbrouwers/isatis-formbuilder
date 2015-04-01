@@ -31,7 +31,6 @@ class Isatis_Formbuilder_Block_Myform extends Mage_Adminhtml_Block_Template
         $post = Mage::app()->getRequest()->getPost();
         $form_id = false;
 
-
         if (isset($post['selected_form_id']) && $post['selected_form_id'] != '') {
             $form_id = $post['selected_form_id'];
         } else {

@@ -20,9 +20,10 @@ form = {
         //be called in magento
         var url = $j('#getFormData').attr('action') + '?isAjax=true';
         var data = $j('#getFormData').serialize();
-
+        $j('#loading-mask').show();
         //submit the fields through ajax call (post data)
         $j.post(url, data, function (response) {
+                $j('#loading-mask').hide();
                 if (!response.error) {
                     form.data = response[0];
                     form.build();

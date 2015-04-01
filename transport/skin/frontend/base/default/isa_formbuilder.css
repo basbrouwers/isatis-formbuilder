@@ -23,7 +23,9 @@
     width:100%;
     text-align: center;
     border-bottom: 1px solid #ddd;
+
 }
+
 
 #formbuilder-form fieldset {
     border: 1px solid rgba(240, 240, 250, 1);
@@ -61,21 +63,7 @@ label {
     margin-right: 5px;
     /* min-width: 125px; */
     display: inline-block;
-    min-height:20px;
-    vertical-align: middle;
-    float:left;
-    width:100%;
 }
-
-
-label.required {
-    color: red;
-}
-
-label.required-entry:after {
-    content: '*';
-}
-
 input[type=radio] {
     position: absolute;
     overflow: hidden;
@@ -99,14 +87,14 @@ input[type=checkbox] {
 }
 
 input[type=radio] + label {
-    background: url(images/isatis_formbuilder/checkbox.png) no-repeat;
+    background: url(images/checkbox.png) no-repeat;
     background-size: 20px;
     padding-left: 30px;
     vertical-align: middle;
 }
 
 input[type=checkbox] + label {
-    background: url(images/isatis_formbuilder/checkbox.png) no-repeat;
+    background: url(images/checkbox.png) no-repeat;
     background-size: 20px;
     padding-left: 30px;
     vertical-align: middle;
@@ -118,8 +106,6 @@ input[type=checkbox]:checked + label {
 input[type=radio]:checked + label {
     background-position: 0 -22px;
 }
-
-
 .scalable {
     background: url("images/btn_bg.gif") repeat-x scroll 0 100% #ffac47;
     border-color: #ed6502 #a04300 #a04300 #ed6502;
@@ -278,6 +264,8 @@ div.col2 {
 .drop-hover {
     border: 2px dashed #545454;
     min-height:10px;
+
+
 }
 
 #formElements {
@@ -401,6 +389,4 @@ input[type=text], textarea, input[type=password] {
 
 
 
-.error{
-    border:1px solid red !important;
-}
+

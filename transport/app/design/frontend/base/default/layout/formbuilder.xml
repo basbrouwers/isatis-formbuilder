@@ -4,19 +4,15 @@
         <reference name="head">
             <action method="addItem">
                 <type>skin_js</type>
-                <name>js/lib/jquery-1.11.2.js</name>
+                <name>js/isatis_formbuilder/lib/jquery-1.11.2.js</name>
             </action>
             <action method="addItem">
                 <type>skin_js</type>
-                <name>js/lib/jquery-ui/jquery-ui.min.js</name>
+                <name>js/isatis_formbuilder/lib/jquery-ui/jquery-ui.min.js</name>
             </action>
             <action method="addItem">
                 <type>skin_js</type>
-                <name>js/lib/featherlight.js</name>
-            </action>
-            <action method="addItem">
-                <type>skin_js</type>
-                <name>js/lib/sticky.js</name>
+                <name>js/isatis_formbuilder/lib/featherlight.js</name>
             </action>
             <action method="addItem">
                 <type>skin_js</type>
@@ -32,8 +28,8 @@
     <formbuilder_index_index>
         <update handle="formbuilder"/>
         <reference name="content">
-            <block type="isatis_formbuilder/form" name="form" template="formbuilder/edit.phtml"/>
-            <block type="isatis_formbuilder/form" name="editfields" template="formbuilder/editfields.phtml"/>
+            <remove name="element"/>
+            <block type="isatis_formbuilder/form" name="publishForm" template="formbuilder/publish.phtml"/>
         </reference>
     </formbuilder_index_index>
 

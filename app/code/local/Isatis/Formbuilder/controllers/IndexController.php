@@ -9,6 +9,7 @@
 class Isatis_Formbuilder_IndexController extends Mage_Core_Controller_Front_Action
 {
 
+
     public function indexAction()
     {
         $this->loadLayout()->renderLayout();
@@ -25,10 +26,24 @@ class Isatis_Formbuilder_IndexController extends Mage_Core_Controller_Front_Acti
 
     public function postFormAction()
     {
+
         $post = $this->getRequest()->getPost();
         $validator = Mage::helper('formbuilder/Validator');
+        $validationResult = $validator->validateForm($post);
+
+        if(count($validationResult)>0) {
+            $layout = $this->loadLayout()->getLayout();
+            $block = $layout->getBlock('form');
+            $block->setValidationData($validationResult);
+            //->getBlock("publishForm")->assign('data',$validationResult);
+            $this->renderLayout();
+            return;
+        }
+
+
 
         $data = '';
+
         foreach ($post as $fieldsetKey => $fieldset) {
             if ($fieldsetKey != 'form_key' && $fieldsetKey != 'submit' && $fieldsetKey != 'form_id') {
                 $data .= '<h3>' . $fieldsetKey . '</h3>';

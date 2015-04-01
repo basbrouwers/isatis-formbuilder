@@ -29,8 +29,8 @@
             </action>
         </reference>
         <reference name="content">
-                <block type="isatis_formbuilder/myform" name="formbuilderHeader" template="formbuilder/header.phtml"/>
-                <block type="isatis_formbuilder/myform" name="element" template="formbuilder/elements.phtml"/>
+                <block type="isatis_formbuilder/adminhtml_form" name="formbuilderHeader" template="formbuilder/header.phtml"/>
+                <block type="isatis_formbuilder/adminhtml_form" name="element" template="formbuilder/elements.phtml"/>
             </reference>
     </formbuilder>
 

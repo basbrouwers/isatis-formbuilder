@@ -33,8 +33,6 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
 
         if (isset($post['selected_form_id']) && $post['selected_form_id'] != '') {
             $form_id = $post['selected_form_id'];
-        } else {
-            $form_id = $post['publish_form_id'];
         }
 
         return $form_id;
@@ -64,17 +62,17 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
             }
             krsort($childElements);
 
-            foreach($childElements as $childId=>$childElement) {
-                if(isset($childElements[$childElement['parent_id']])) {
-                    $childElements[$childElement['parent_id']]['childElements'][]=$childElement;
+            foreach ($childElements as $childId => $childElement) {
+                if (isset($childElements[$childElement['parent_id']])) {
+                    $childElements[$childElement['parent_id']]['childElements'][] = $childElement;
                     unset($childElements[$childId]);
                 }
             }
 
-            foreach($childElements as $child) {
+            foreach ($childElements as $child) {
                 $elementsArray[$child['parent_id']]['childElements'][] = $child;
             }
-            
+
             $dataArray['fieldsets'][$fieldsetKey]['elements'] = $elementsArray;
         }
 
@@ -102,6 +100,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
 
         $formData = $this->transposeArray($formData, 'element_id');
 
+
         /** @var Isatis_Formbuilder_Helper_ComponentConfigurator $formConfigurator */
         $formConfigurator = Mage::helper('formbuilder/ComponentConfigurator');
 
@@ -123,15 +122,17 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
 
             foreach ($column as $colNumber => $node) {
 
-                $formHTML .= '<div id="column' . $colNumber . '" class="col' . $colNumber . '"">';
+                $formHTML .= '<div id="column' . $colNumber . '" class="col' . $colNumber;
+                if ($formData['subtemplate'] == 1) {
+                    $formHTML .= '-full';
+                }
+                $formHTML .= '">';
                 $formHTML .= implode('', $node);
                 $formHTML .= '</div>';
             };
             //close the page div
             $formHTML .= '</div>';
         }
-
-
 
         return $formHTML;
     }
@@ -140,8 +141,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
      * Builds options for the days selectbox
      * @return string
      */
-    public
-    function fillDays()
+    public function fillDays()
     {
         $days = '';
         for ($i = 1; $i < 32; $i++) {
@@ -154,8 +154,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
      * Builds the select options for month selectbox
      * @return string
      */
-    public
-    function fillMonths()
+    public function fillMonths()
     {
         $months = '';
         for ($i = 1; $i <= 12; $i++) {
@@ -170,8 +169,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
      * Builds the options for the year selectbox
      * @return string
      */
-    public
-    function fillYears()
+    public function fillYears()
     {
         $currentYear = date('Y');
         $years = '';
@@ -187,8 +185,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
      * @param string $sorting
      * @return array
      */
-    public
-    function getFormData($formId, $sorting = 'asc')
+    public function getFormData($formId, $sorting = 'asc')
     {
         $form = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
 
@@ -218,8 +215,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
         return $form[0];
     }
 
-    public
-    function getFormTitle()
+    public function getFormTitle()
     {
         //fetch the id of the form
         $post = Mage::app()->getRequest()->getPost();

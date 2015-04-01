@@ -1,9 +1,6 @@
 /*custom font*/
 @import url(http://fonts.googleapis.com/css?family=Montserrat);
 
-.box{
-    margin:15px 0;
-}
 #formbuilder-form {
     /* width: 600px; */
     margin: 50px auto;
@@ -19,16 +16,17 @@
 
 #formbuilder-form .formtitle {
     margin: 35px auto;
-    display:block;
-    width:100%;
+    display: block;
+    width: 100%;
     text-align: center;
     border-bottom: 1px solid #ddd;
+
 }
 
 #formbuilder-form fieldset {
     border: 1px solid rgba(240, 240, 250, 1);
     border-radius: 3px;
-    //background: linear-gradient(rgba(255, 255, 255, 1), rgba(240, 240, 240, 1));
+/ / background : linear-gradient(rgba(255, 255, 255, 1), rgba(240, 240, 240, 1));
     padding: 20px 30px;
     box-sizing: border-box;
     width: 80%;
@@ -44,6 +42,7 @@ div.formsubmit {
     width: 100%;
     margin: 35px auto;
 }
+
 legend {
     font-weight: bold;
     text-transform: uppercase;
@@ -57,22 +56,17 @@ legend {
 }
 
 label {
+    width: 100%;
     font-family: montserrat, arial, verdana;
     margin-right: 5px;
-    /* min-width: 125px; */
     display: inline-block;
-    min-height:20px;
-    vertical-align: middle;
-    float:left;
-    width:100%;
 }
-
 
 label.required {
     color: red;
 }
 
-label.required-entry:after {
+label.required:after {
     content: '*';
 }
 
@@ -99,14 +93,14 @@ input[type=checkbox] {
 }
 
 input[type=radio] + label {
-    background: url(images/isatis_formbuilder/checkbox.png) no-repeat;
+    background: url(../images/isatis_formbuilder/checkbox.png) no-repeat;
     background-size: 20px;
     padding-left: 30px;
     vertical-align: middle;
 }
 
 input[type=checkbox] + label {
-    background: url(images/isatis_formbuilder/checkbox.png) no-repeat;
+    background: url(../images/isatis_formbuilder/checkbox.png) no-repeat;
     background-size: 20px;
     padding-left: 30px;
     vertical-align: middle;
@@ -115,13 +109,13 @@ input[type=checkbox] + label {
 input[type=checkbox]:checked + label {
     background-position: 0 -22px;
 }
+
 input[type=radio]:checked + label {
     background-position: 0 -22px;
 }
 
-
 .scalable {
-    background: url("images/btn_bg.gif") repeat-x scroll 0 100% #ffac47;
+    background: url("../images/isatis_formbuilder/btn_bg.gif") repeat-x scroll 0 100% #ffac47;
     border-color: #ed6502 #a04300 #a04300 #ed6502;
     border-style: solid;
     border-width: 1px;
@@ -142,25 +136,26 @@ input[type=radio]:checked + label {
 }
 
 .btn-remove {
-    background: url(images/delete.png) no-repeat 100% 0;
+    background: url(../images/isatis_formbuilder/delete.png) no-repeat 100% 0;
     background-size: 20px 20px;
     margin: 2px 10px;
     display: inline-block;
 }
 
 .btn-edit {
-    background: url(images/edit.png) no-repeat 100% 0;
+    background: url(../images/isatis_formbuilder/edit.png) no-repeat 100% 0;
     background-size: 20px 20px;
     margin: 2px 10px;
 }
+
 .btn-duplicate {
-    background: url(images/plus.png) no-repeat 100% 0;
+    background: url(../images/isatis_formbuilder/plus.png) no-repeat 100% 0;
     background-size: 20px 20px;
     margin: 2px 10px;
 }
 
 .btn-plus {
-    background: url(images/plus.png) no-repeat 100% 0;
+    background: url(../images/isatis_formbuilder/plus.png) no-repeat 100% 0;
     background-size: 20px 20px;
     display: inline-block;
     width: 22px;
@@ -168,7 +163,7 @@ input[type=radio]:checked + label {
 }
 
 .btn-plus-radio {
-    background: url(images/plus.png) no-repeat;
+    background: url(../images/isatis_formbuilder/plus.png) no-repeat;
     background-size: 20px 20px;
     display: block;
     width: 100%;
@@ -177,30 +172,30 @@ input[type=radio]:checked + label {
 
 }
 
-
 .hidden {
     display: none;
 }
 
 .childElement {
-    padding-left:50px;
+    padding-left: 50px;
 }
 
 #editFormFieldSuccess {
-    background: url(images/checkbox.png) no-repeat 100% 0;
+    background: url(../images/isatis_formbuilder/checkbox.png) no-repeat 100% 0;
     background-size: 20px 20px;
     width: 20px;
     height: 20px;
     display: none;
 
 }
+
 textarea {
     min-height: 50px;
 }
+
 .formcontainer {
 
     width: 100%;
-    
 
     /* border: 1px solid #a9a9a9; */
     float: right;
@@ -223,10 +218,10 @@ div.col2 {
 
 }
 
-
 .dependent {
-    display:none;
+    display: none;
 }
+
 .draggable {
     cursor: move;
 }
@@ -234,55 +229,57 @@ div.col2 {
 .droppable {
     height: 35px;
     border: 1px dashed #DDDDDD;
-    width:90%;
-    display:table;
+    width: 90%;
+    display: table;
     overflow: hidden;
     text-align: center;
-    font-size:2em;
+    font-size: 2em;
 }
 
 .editbuttons {
-    display:none;
+    display: none;
 }
 
 .fieldset-droppable {
     border: 1px solid #DDD;
-    color:#ddd;
+    color: #ddd;
 
 }
 
 .fieldset-droppable span {
-    display:table-cell;
+    display: table-cell;
     vertical-align: middle;
 
 }
 
 .hidden-droppable {
-    height:20px;
-    border:1px;
+    height: 20px;
+    border: 1px;
     margin-bottom: 10px;
 }
-.tab {
-    padding-left:60px;
-}
 
+.tab {
+    padding-left: 60px;
+}
 
 .fieldset-only {
-    color:#ddd;
+    color: #ddd;
 }
 
-.fieldset-only span{
-    display:table-cell;
+.fieldset-only span {
+    display: table-cell;
     vertical-align: middle;
 }
+
 .drop-hover {
     border: 2px dashed #545454;
-    min-height:10px;
+    min-height: 10px;
+
 }
 
 #formElements {
     width: 99%;
-    background-image: linear-gradient(rgba(255,255,255,0.1),rgba(222,222,222,1));
+    background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(222, 222, 222, 1));
 }
 
 #formFieldEditor {
@@ -365,7 +362,7 @@ span.message {
 }
 
 input[type=submit] {
-    background: url("images/btn_bg.gif") repeat-x scroll 0 100% #ffac47;
+    background: url("../images/isatis_formbuilder/btn_bg.gif") repeat-x scroll 0 100% #ffac47;
     border-color: #ed6502 #a04300 #a04300 #ed6502;
     border-style: solid;
     border-width: 1px;
@@ -392,15 +389,14 @@ input[type=text], textarea, input[type=password], select {
     padding: 2px;
     vertical-align: middle;
     /* display:inline-block; */
-    float:left;
-    
+    float: left;
+
 }
 
 input[type=text], textarea, input[type=password] {
-    width: 99%;}
-
-
-
-.error{
-    border:1px solid red !important;
+    width: 99%;
 }
+
+
+
+
