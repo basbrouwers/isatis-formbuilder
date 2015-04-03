@@ -14,8 +14,8 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
     var $currentPage = 1;
     var $currentFieldset = '';
     var $validationResult = false;
+    var $postData = false;
     const DS = DIRECTORY_SEPARATOR;
-
 
     public function __construct()
     {
@@ -31,22 +31,23 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         } catch (Exception $e) {
             die($e->getMessage());
         }
+
     }
 
+    /**
+     * @param $result array
+     */
     public function setValidationResult($result){
         $this->validationResult = $result;
     }
+
     /**
      * @param $fieldsetData array containing all data needed for configuring field
      * @return string
      */
-    public function configureFieldset($fieldsetData)
+    public function configureFieldset($fieldsetData, $postData=false)
     {
-
-
         $this->currentFieldset = $fieldsetData['legend'];
-
-
         /**
          * @var $newNode DOMNodeList
          */
@@ -62,13 +63,10 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         //$legend is a reference to legend dom element inside $wrappingDiv.
         $wrappingDiv->getElementsByTagName('legend')->item(0)->nodeValue = $fieldsetData['legend'];
 
-
         //loop through the form elements belonging to the fieldset and append them
-        foreach ($fieldsetData['elements'] as $element) {
+        foreach ($fieldsetData['elements'] as $fieldsetName =>$element) {
 
-
-
-            $elementCode = $this->configureField($element);
+            $elementCode = $this->configureField($element, $fieldsetName);
 
             if (isset($element['childElements'])) {
 
@@ -85,9 +83,12 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
                     if ($childElement['parentdependency'] == 1) {
                         $elementCode->setAttribute('class', 'dependencyTrigger');
                     }
+
+                    if(isset($postData[$fieldsetName][$childElement['name'].'-'.$childElement['element_id']])){
+                        die('FOUND');
+                    }
                 }
             }
-
 
             if ($elementCode->hasAttribute('id')) {
                 $elementCode->removeAttribute('id');
@@ -115,8 +116,11 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
     }
 
 
+    /**
+     * @param $childElement
+     * @return string
+     */
     private function appendChild($childElement) {
-
 
         $elementCode = $this->configureField($childElement);
         if(isset($childElement['childElements'])){
@@ -125,34 +129,34 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
             }
         }
 
-
-
         return $elementCode;
     }
+
 
     /**
      * Function deteermines what type of field should be configured
      * @param $fieldData array
+     * @param $fieldsetName
      * @return string
      */
-    public function configureField($fieldData)
+    public function configureField($fieldData, $fieldsetName=false)
     {
 
         switch ($fieldData['type']) {
             case 'text':
-                return $this->configureTextField($fieldData);
+                return $this->configureTextField($fieldData,$fieldsetName);
                 break;
             case 'select':
-                return $this->configureSelectField($fieldData);
+                return $this->configureSelectField($fieldData,$fieldsetName);
                 break;
             case 'textarea':
-                return $this->configureTextareaField($fieldData);
+                return $this->configureTextareaField($fieldData,$fieldsetName);
                 break;
             case 'radio':
-                return $this->configureRadiobuttonField($fieldData);
+                return $this->configureRadiobuttonField($fieldData,$fieldsetName);
                 break;
             case 'checkbox':
-                return $this->configureCheckboxField($fieldData);
+                return $this->configureCheckboxField($fieldData,$fieldsetName);
                 break;
             case 'label':
                 $wrappingDiv = $this->dom->getElementById('labelFieldTemplate')->cloneNode(true);
@@ -160,24 +164,28 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
                 return $wrappingDiv;
                 break;
             case 'date':
-                return $this->configureDateField($fieldData);
+                return $this->configureDateField($fieldData,$fieldsetName);
                 break;
             case 'infobox':
-                return $this->configureInfobox($fieldData);
+                return $this->configureInfobox($fieldData,$fieldsetName);
                 break;
             case 'yes-no':
-                return $this->configureYesNo($fieldData);
+                return $this->configureYesNo($fieldData,$fieldsetName);
                 break;
             case 'group':
-                return $this->configureGroup($fieldData);
+                return $this->configureGroup($fieldData,$fieldsetName);
                 break;
             case 'customhtml':
-                return $this->configureCustomHTML($fieldData);
+                return $this->configureCustomHTML($fieldData,$fieldsetName);
                 break;
         }
     }
 
 
+    /**
+     * @param $fieldData array
+     * @return DomElement node
+     */
     private function configureGroup($fieldData)
     {
         $wrappingDiv = $this->dom->getElementById('groupFieldTemplate')->cloneNode(true);
@@ -188,9 +196,9 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $list->setAttribute('class', 'childplacement');
         $wrappingDiv->appendChild($list);
 
-
         return $wrappingDiv;
     }
+
 
     /**
      * @param $fieldData
@@ -303,11 +311,12 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
     public function configureRadiobuttonField($fieldData)
     {
         $wrappingDiv = $this->dom->getElementById('radioFieldTemplate')->cloneNode(true);
+        $wrappingDiv->removeAttribute('id');
         //configure the input field
         $textInput = $wrappingDiv->getElementsByTagName('input')->item(0);
         $textInput->setAttribute('id', 'element-' . $fieldData['element_id']);
         $textInput->setAttribute('value', $fieldData['value']);
-        $textInput->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] .'-'.$fieldData['element_id'].  ']');
+        $textInput->setAttribute('name', '' . $this->currentFieldset . '[' . $fieldData['name'] .']');
         if($fieldData['validationrule']!='') {
             $textInput->setAttribute('class', $fieldData['validationrule']);
         }
@@ -316,6 +325,7 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
         $this->configureLabel($fieldData, $wrappingDiv);
         return $wrappingDiv;
     }
+
 
     /**
      * @param $fieldData array
@@ -419,16 +429,21 @@ class Isatis_Formbuilder_Helper_ComponentConfigurator extends Mage_Core_Helper_A
 
         $wrappingDiv = $this->dom->getElementById('infoboxFieldTemplate')->cloneNode(true);
 
-        //remove the default title en text from the template
-        $wrappingDiv->removeChild($wrappingDiv->getElementsByTagName('h4')->item(0));
-        $wrappingDiv->removeChild($wrappingDiv->getElementsByTagName('div')->item(0));
 
-        //create new h4 element
-        $titleContainer = $this->dom->createElement('h4');
+        $titleContainer = $wrappingDiv->firstChild->cloneNode();
+
+        //remove the default title en text from the template
+        while ($wrappingDiv->hasChildNodes()) {
+            $wrappingDiv->removeChild($wrappingDiv->firstChild);
+        }
+
+        //create new h3 element
+        $titleContainer = $this->dom->createElement('h3');
         //create textNode
         $title = $this->dom->createTextNode($fieldData['label']);
-        //append the textnode to the new h4 element
+        //append the textnode to the new titleContainer element
         $titleContainer->appendChild($title);
+
 
         //repeat for text in the infoBox
         $textContainer = $this->dom->createElement('div');

@@ -59,28 +59,17 @@
             <!--RADIO START-->
             <div class="box formElement" id="radioFieldTemplate" data-element-type="radio">
                 <input type="radio" name="" value="" class="formElement">
-                <label class="label">Radiobutton</label>
+                <label>Radiobutton</label>
             </div>
             <!--RADIO END-->
         </div>
 
-        <div class="draggable" style="margin:15px 5px;clear:both">
-            <!--GROUP START-->
-            <div class="box formElement" id="groupFieldTemplate" data-element-type="group">
-                <label class="label">Radiobutton Group</label>
-                <div name="group">
-                    <div class="droppable">
 
-                    </div>
-                </div>
-            </div>
-            <!--GROUP END-->
-        </div>
 
         <div class="input-box draggable">
             <!--CHECKBOX START-->
             <div class="box formElement" id="checkboxFieldTemplate" data-element-type="checkbox">
-                <input type="checkbox" " ><label for="">Checkbox</label>
+                <input type="checkbox"><label>Checkbox</label>
             </div>
             <!--CHECKBOX END-->
         </div>
@@ -93,10 +82,23 @@
             <!--CUSTOM-HTML END-->
         </div>
 
+        <div class="draggable" style="margin:15px 5px;clear:both">
+            <!--GROUP START-->
+            <div class="box formElement" id="groupFieldTemplate" data-element-type="group">
+                <label>Group</label>
+                <div name="group">
+                    <div class="droppable">
+
+                    </div>
+                </div>
+            </div>
+            <!--GROUP END-->
+        </div>
+
         <div class="draggable">
             <!-- INFOBOX FIELD START-->
             <div class="box formElement" id="infoboxFieldTemplate" data-element-type="infobox">
-                <h4 id="infoboxTitle">Textbox</h4>
+                <h3 id="infoboxTitle">Textbox</h3>
                 <div class="infotext" id="infoboxText">
                     Donec sem est, malesuada vitae lacus in, tincidunt varius ligula. Aenean eu purus ac dolor porttitor hendrerit. Quisque a tincidunt libero. Donec laoreet neque volutpat, blandit urna id, posuere leo.
                 </div>
@@ -154,8 +156,8 @@
                         <option value="30">30</option>
                         <option value="31">31</option>
                     </select>
-                    <select name="month">
-                        <option value="1">January</option>
+                    <select name="month" class="validate-date-month-nl">
+                        <option value="1"></option>
                         <option value="2">February</option>
                         <option value="3">March</option>
                         <option value="4">April</option>

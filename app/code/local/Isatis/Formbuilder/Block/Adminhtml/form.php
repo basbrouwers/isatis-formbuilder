@@ -190,7 +190,7 @@ class Isatis_Formbuilder_Block_Adminhtml_Form extends Mage_Adminhtml_Block_Templ
         $form = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
 
         //Instanciate fieldset Model and get all fieldset for the requested form
-        $fieldsets = Mage::getModel('formbuilder/fieldset')->getCollection()->addFieldToFilter('form_id', $formId)->setOrder('sort_order', $sorting)->getData();
+        $fieldsets = Mage::getModel('formbuilder/fieldset')->getCollection()->addFieldToFilter('form_id', $formId)->setOrder('crdate', $sorting)->getData();
 
         foreach ($fieldsets as &$fieldset) {
             $elements = Mage::getModel('formbuilder/element')->getCollection()->addFieldToFilter('fieldset_id', $fieldset['fieldset_id'])->setOrder('sort_order', $sorting)->getData();

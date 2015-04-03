@@ -26,7 +26,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
 
         $form->setTitle($post['form_title']);
         $form->setSubtemplate($post['form_subtemplate']);
-        $form->setReceiver($post['form_receiver']);
+        //$form->setReceiver($post['form_receiver']);
         $form->save();
 
         $post['form_id'] = $form->getId();
@@ -36,7 +36,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type','application/json')
+            ->setHeader('Content-Type', 'application/json')
             ->setBody($jsonData);
     }
 
@@ -79,7 +79,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type','application/json')
+            ->setHeader('Content-Type', 'application/json')
             ->setBody($jsonData);
     }
 
@@ -102,19 +102,55 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
     {
         /** @var  $post array */
         $post = $this->getRequest()->getPost();
+        if (array_pop(explode(',',$post['sortOrder']))=='formcontainerMainArea') {
+            $post = $this->saveFieldsetSortOrder($post);
+        } else {
 
-        /** @var $sortOrder array */
-        $sortOrder = array();
+            /** @var $sortOrder array */
+            $sortOrder = array();
 
-        if (isset($post['sortOrder']) && $post['sortOrder'] != '') {
-            $sortOrder = array_filter(explode(',', $post['sortOrder']));
-            array_walk($sortOrder, array($this, 'getCleanId'));
-            $sortOrder = array_flip($sortOrder);
+            if (isset($post['sortOrder']) && $post['sortOrder'] != '') {
+                $sortOrder = array_filter(explode(',', $post['sortOrder']));
+                array_walk($sortOrder, array($this, 'getCleanId'));
+                $sortOrder = array_flip($sortOrder);
+            }
+
+
+            /** @var $element Isatis_Formbuilder_Model_Element */
+            $element = Mage::getModel('formbuilder/element');
+
+            foreach ($sortOrder as $key => $value) {
+
+                try {
+                    $element->load($key)->setSortOrder($value)->save();
+
+
+                } catch (Exception $e) {
+                    $post['error'] = true;
+                    $post['message'] = $e->getMessage();
+                    break;
+                }
+            }
         }
 
+        $jsonData = Mage::helper('core')->jsonEncode($post);
+        /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
+        $this->getResponse()
+            ->clearHeaders()
+            ->setHeader('Content-Type', 'application/json')
+            ->setBody($jsonData);
+    }
 
+    public function saveFieldsetSortOrder($data)
+    {
+
+        $sortOrder = explode(',', $data['sortOrder']);
+        //remove last element because it is not a fieldset but drop area in the form
+        array_pop($sortOrder);
+        array_walk($sortOrder, array($this, 'getCleanId'));
+        $sortOrder = array_flip($sortOrder);
         /** @var $element Isatis_Formbuilder_Model_Element */
-        $element = Mage::getModel('formbuilder/element');
+        $element = Mage::getModel('formbuilder/fieldset');
 
         foreach ($sortOrder as $key => $value) {
 
@@ -123,18 +159,12 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
 
 
             } catch (Exception $e) {
-                $post['error'] = true;
-                $post['message'] = $e->getMessage();
+                $data['error'] = true;
+                $data['message'] = $e->getMessage();
                 break;
             }
         }
-
-        $jsonData = Mage::helper('core')->jsonEncode($post);
-        /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
-        $this->getResponse()
-            ->clearHeaders()
-            ->setHeader('Content-Type','application/json')
-            ->setBody($jsonData);
+        return $data;
     }
 
     /**
@@ -242,16 +272,29 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             $element->setParentId($parent_id);
             $element->setName($post['element_name']);
             $element->setLabel($post['element_label']);
-            $element->setValue($post['element_value']);
+            if (isset($post['element_value'])) {
+                $element->setValue($post['element_value']);
+            }
+
             $element->setType($post['element_type']);
-            $element->setRequired($post['element_required']);
-            $element->setValidationrule($post['element_validationrule']);
-            $element->setPlaceholder($post['element_placeholder']);
-            $element->setSortorder($post['element_sort_order']);
+
+            if (isset($post['element_required'])) {
+                $element->setRequired($post['element_required']);
+            }
+            if (isset($post['element_validationrule'])) {
+                $element->setValidationrule($post['element_validationrule']);
+            }
+            if (isset($post['element_placeholder'])) {
+                $element->setPlaceholder($post['element_placeholder']);
+            }
+            if (isset($post['element_sort_order'])) {
+                $element->setSortorder($post['element_sort_order']);
+            }
+
             $element->setTstamp(time());
-            if(isset($post['element_parentdependency'])) {
-            $element->setParentdependency(1);
-                } else {
+            if (isset($post['element_parentdependency'])) {
+                $element->setParentdependency(1);
+            } else {
                 $element->setParentdependency(0);
             }
 
@@ -266,12 +309,12 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
                 //save the options for the selectbox
                 $optionModel = Mage::getModel('formbuilder/option');
 
-                
-                foreach ($post['option'] as $option_id=>$optionData) {
+
+                foreach ($post['option'] as $option_id => $optionData) {
                     if ($option_id) {
                         $optionModel->load($this->getCleanId($option_id));
                     }
-                        $optionModel->setElementId($element->getId());
+                    $optionModel->setElementId($element->getId());
 
                     if (strpos($optionData, '|')) {
                         $optionData = explode('|', $optionData);
@@ -326,7 +369,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type','application/json')
+            ->setHeader('Content-Type', 'application/json')
             ->setBody($jsonData);
     }
 
@@ -334,8 +377,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
      */
     public function getFormDataAction()
     {
-        $post = Mage::app()->getRequest()->getPost();
-        $formId = $post['requested_form_id'];
+        $formId = Mage::app()->getRequest()->getPost('requested_form_id');
 
         $form = $this->getData($formId);
 
@@ -344,7 +386,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         /** @var $this Isatis_Formbuilder_Adminhtml_IndexController */
         $this->getResponse()
             ->clearHeaders()
-            ->setHeader('Content-Type','application/json')
+            ->setHeader('Content-Type', 'application/json')
             ->setBody($jsonData);
     }
 
@@ -358,7 +400,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         $form = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
 
         //Instanciate fieldset Model and get all fieldset for the requested form
-        $fieldsets = Mage::getModel('formbuilder/fieldset')->getCollection()->addFieldToFilter('form_id', $formId)->setOrder('sort_order', 'desc')->getData();
+        $fieldsets = Mage::getModel('formbuilder/fieldset')->getCollection()->addFieldToFilter('form_id', $formId)->setOrder('tstamp', 'desc')->getData();
 
         foreach ($fieldsets as &$fieldset) {
             $elements = Mage::getModel('formbuilder/element')
@@ -409,7 +451,7 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
                             $data .= '&nbsp;&nbsp;&nbsp;&nbsp;' . $key . ': ' . $val . '<br />';
                         }
                     } else {
-                        $data .= '<strong>'.$name . ':</strong>' . $value . '<br />';
+                        $data .= '<strong>' . $name . ':</strong>' . $value . '<br />';
                     }
                 }
             }

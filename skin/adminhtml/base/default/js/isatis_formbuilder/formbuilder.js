@@ -5,12 +5,15 @@
 //make jQuery play nice with Prototype
 $j = jQuery.noConflict();
 
+Validation.add('validate-date-month-nl', '', function(v) {
+    return  (v == '' || (v == null) || (v.length == 0) || /(?:(0?[1-9]|1[012]) | (?:Januari|Februari|Maart|April|Mei|Juni|July|Augustus|September|O[c|k]tober)|November|December)/.test(v));
+});
 
 //define the settings for jquery droppable objects
 var droptions = {
     hoverClass: 'drop-hover',
     tolerance: 'intersect',
-    accept: '.draggable',
+    accept: '.fieldset',
     items: 'div:not(.droppable)',
 
     drop: function (event, ui) {
@@ -29,15 +32,19 @@ var droptions = {
         //check if the dropped element contains a droparea (usually in fieldset)
         //and enable it
         if (dropzone = $j(this).find('.droppable')) {
-            $j(dropzone).droppable(droptions);
+            $j(dropzone).droppable(fieldsetDroptions);
             $j(dropzone).droppable({accept: 'draggable'});
-            $j(dropzone).droppable(droptions).appendTo($j(dropzone).parent());
+            $j(dropzone).droppable(fieldsetDroptions).appendTo($j(dropzone).parent());
+            console.log('adding droparea for elements');
+            
         }
         //append the new droppable element to the parent object
         $j(newDropArea).droppable(droptions).appendTo($j(this).parent());
     }
 };
 
+var fieldsetDroptions = $j.extend(true,{},droptions);
+    fieldsetDroptions.accept = '.formelement';
 
 var leef = {
     version: '1.0.0',
@@ -49,7 +56,7 @@ var leef = {
     init: function () {
 
         //add the validation rules to the editor
-        leef.addValidationRules();
+        leef.loadValidationRules();
 
         //make dropped elements sortable in main area
         $j('.formcontainerMainArea').sortable({
@@ -70,6 +77,9 @@ var leef = {
             //enable draggables
             $j('.draggable').draggable({revert: "invalid", helper: "clone"}),
 
+            $j('body').on('click', 'legend', function () {
+                $j(this).parent().find('.sortable').slideToggle();
+            }),
             //enable delete button
             $j('body').on('click', '.btn-remove', function () {
                 leef.removeElement(this);
@@ -99,9 +109,9 @@ var leef = {
                 leef.addPage();
             }),
 
-        $j('#anchor-content').on('click', '.box label', function (event, ui) {
-            $j(this).parent().parent().siblings('.editbuttons').slideToggle().css('display', 'inline-block');
-        }),
+            $j('#anchor-content').on('click', '.box label', function (event, ui) {
+                $j(this).parent().parent().siblings('.editbuttons').slideToggle().css('display', 'inline-block');
+            }),
 
             $j('#form_subtemplate_select').on('change', function () {
                 leef.setSubTemplate($j(this).val());
@@ -150,12 +160,15 @@ var leef = {
                             } else {
                                 //we submitted the form
                                 leef.displayMessage(response.message);
+                                //set the id value for the publish button so we can preview our form on the frontend
+                                $j('#publish_form_id').val(response.form_id);
 
-                                //chcek if we need to add the first column div. This is only needed when building a new form.
+                                //check if we need to add the first column div. This is only needed when building a new form.
                                 if ($j('#page-1').find($j('.column' + response.form_subtemplate)).length == 0) {
                                     //set the columns in the main form area to the number that was chosen for the form
                                     $j('#page-1').empty();
                                     $j('#page-1').append($j('#' + response.form_subtemplate + 'column').html());
+                                    //we need to set the form_id
 
                                     //configure droppable area
                                     $j('.droppable').droppable(droptions);
@@ -171,7 +184,7 @@ var leef = {
             })
     },
 
-    addValidationRules: function () {
+    loadValidationRules: function () {
         //gather the validation rules from the Validation object
         var options = '<option value=""></option>';
         for (var method in Validation.methods) {
@@ -238,6 +251,8 @@ var leef = {
 
         $j(droppedElement).find('.box').removeAttr('id');
 
+        $j(droppedElement).find('legend').append('<span>+</span>');
+
         var container = '<div>' + droppedElement + '</div><div class="editbuttons"><div class="btn-icon btn-edit">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div><div class="btn-icon btn-duplicate">&nbsp;</div></div>';
 
 
@@ -245,10 +260,10 @@ var leef = {
             container += '<div class="tab sortable"><div class="droppable hidden-droppable"></div></div>';
             //new element added so we need to make sure the sortorder is calculated
             //newElementAdded is used after submitting the editform to determine if sorting is needed
-            leef.newElementAdded = true;
-        }
-        $j(container).appendTo(droparea);
 
+        }
+        leef.newElementAdded = true;
+        $j(container).appendTo(droparea);
 
         //make sure all items are sortable, including the newly added item
         $j(droparea).find('.sortable').sortable({
@@ -259,7 +274,6 @@ var leef = {
             }
         });
 
-
         //open the edit window so user can configure the element
         //default argument for the edit function is the edit button that was clicked.
         //In this case no button was clicked so we pas the edit-button 'by hand'
@@ -267,6 +281,7 @@ var leef = {
             leef.editElement($j(droparea).children().find('.btn-edit'));
         }, 200);
     },
+
 
     /**
      * Removes element from form by removing it's parent container
@@ -298,6 +313,10 @@ var leef = {
 
     },
 
+    /**
+     * duplicates the indicated element and removes id and name attributes of the new element
+     * @param element
+     */
     duplicateElement: function (element) {
         var newRow = $j(element).closest('.formRow').clone();
         //remove the id attribute of the row div
@@ -321,9 +340,6 @@ var leef = {
         //determine element type and determine what fields to display
 
         var element = $j(button).parent().parent().find('.formElement');
-        console.log(element);
-
-
         leef.activeField = element;
 
         var elementType = element.attr('data-element-type');
@@ -393,7 +409,6 @@ var leef = {
         var elementsToShow = '#' + elementType.toLowerCase() + 'FormElements';
 
 
-
         //set id of element in hidden field of the form
         if (leef.newElementAdded) {
             $j('#element_id').val('');
@@ -413,6 +428,8 @@ var leef = {
         }
 
         var formfields = $j("#generalFormElements").clone();
+
+        
 
         switch (elementType) {
             case 'fieldset':
@@ -506,7 +523,7 @@ var leef = {
                 formfields.append($j('#labelEditField'));
                 break;
         }
-        formfields.prepend($j('#generalEditFields'));
+        formfields.prepend($j('#generalEditFields').clone());
 
         if (parentElementType == 'checkbox' || parentElementType == 'radio') {
             formfields.append($j('#parentDependencyEditField').clone());
@@ -597,7 +614,8 @@ var leef = {
 
     /**
      *
-     * @param data
+     * @param event
+     * @param item
      */
     updateSortOrder: function (event, item) {
         //convert the parent div of the dragged element to an array containing the sorted elements

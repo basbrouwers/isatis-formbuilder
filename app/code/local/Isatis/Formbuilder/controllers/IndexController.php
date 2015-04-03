@@ -35,11 +35,16 @@ class Isatis_Formbuilder_IndexController extends Mage_Core_Controller_Front_Acti
             $layout = $this->loadLayout()->getLayout();
             $block = $layout->getBlock('form');
             $block->setValidationData($validationResult);
+            $block->setPostData($post);
             //->getBlock("publishForm")->assign('data',$validationResult);
             $this->renderLayout();
             return;
         }
 
+
+echo "<pre>";
+print_r($post);
+echo "</pre>";
 
 
         $data = '';

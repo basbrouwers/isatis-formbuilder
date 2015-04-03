@@ -26,7 +26,7 @@
 #formbuilder-form fieldset {
     border: 1px solid rgba(240, 240, 250, 1);
     border-radius: 3px;
-/ / background : linear-gradient(rgba(255, 255, 255, 1), rgba(240, 240, 240, 1));
+    background-color : #F9FBF0;
     padding: 20px 30px;
     box-sizing: border-box;
     width: 80%;
@@ -36,6 +36,9 @@
     color: #303030
 }
 
+.fieldset {
+    background-color: #F9FBF0;
+}
 div.formsubmit {
     text-align: center;
     display: inline-block;
@@ -60,6 +63,7 @@ label {
     font-family: montserrat, arial, verdana;
     margin-right: 5px;
     display: inline-block;
+    font-weight: bold;
 }
 
 label.required {
@@ -279,7 +283,8 @@ div.col2 {
 
 #formElements {
     width: 99%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(222, 222, 222, 1));
+    border-right: 1px solid #dddddd;
+    /* background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(222, 222, 222, 1)); */
 }
 
 #formFieldEditor {

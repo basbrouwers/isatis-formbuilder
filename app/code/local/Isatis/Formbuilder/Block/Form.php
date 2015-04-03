@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Created by PhpStorm.
  * User: basb
@@ -10,7 +9,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
 {
     var $formHierarchy = array();
     var $validationResult = false;
-
+    var $postData = false;
 
     private function transposeArray($dataArray)
     {
@@ -34,8 +33,6 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
                 }
             }
 
-
-
             //add the child elements to their respective parent element
             foreach ($childElements as $childId => $childElement) {
                 if (isset($childElements[$childElement['parent_id']])) {
@@ -50,9 +47,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
             
             $result['fieldsets'][$fieldsetKey]=$fieldsetArray;
             $result['fieldsets'][$fieldsetKey]['elements'] = $elementsArray;
-
         }
-
 
         return $result;
     }
@@ -64,7 +59,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
     public function publishForm()
     {
         $this->validationResult = $this->getValidationData();
-        
+        $this->postData = $this->getPostData();
         //fetch the id of the form
         $post = Mage::app()->getRequest()->getPost();
 
@@ -90,9 +85,10 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
          * place each fieldset in the correct page
          */
         $nodes = array();
-
-        foreach ($formData['fieldsets'] as $key => $fieldset) {
-            $nodes[$fieldset['pagenumber']][$fieldset['column']][] = $formConfigurator->configureFieldset($fieldset);
+        if(isset($formData['fieldsets'])) {
+            foreach ($formData['fieldsets'] as $key => $fieldset) {
+                $nodes[$fieldset['pagenumber']][$fieldset['column']][] = $formConfigurator->configureFieldset($fieldset, $this->postData);
+            }
         }
 
         $formHTML = '';
@@ -166,6 +162,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
         if (isset($post['form_id']) && $post['form_id'] != '') {
             $formId = $post['form_id'];
         }
+
         $formTitle = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();
 
         return $formTitle[0]['title'];
