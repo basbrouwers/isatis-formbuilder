@@ -60,6 +60,10 @@ $fieldsetTable = $installer->getConnection()->newTable($installer->getTable('for
         'unsigned' => true,
         'nullable' => false,
     ), 'Form ID')
+    ->addColumn('name', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
+        'nullable' => true,
+        ''
+    ), 'Name')
     ->addColumn('legend', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
         'nullable' => false,
         ''

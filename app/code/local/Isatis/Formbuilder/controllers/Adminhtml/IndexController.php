@@ -211,8 +211,8 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         $fieldset = Mage::getModel('formbuilder/fieldset');
 
         if (isset($post['element_id']) && $post['element_id'] != '') {
-            preg_match('/element[_-]?(\d)^/', $post['element_id'], $match);
-            $fieldsetId = $match[1];
+            $fieldsetId = array_pop(explode('_',$post['element_id']));
+
             //load the element so we can update it
             $fieldset->load($fieldsetId);
         } else {
@@ -221,10 +221,12 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
         }
 
         $fieldset->setFormId($post['parent_id']);
+        $fieldset->setName($post['element_name']);
         $fieldset->setLegend($post['element_legend']);
         $fieldset->setPagenumber($post['pagenumber']);
         $fieldset->setColumn($post['column']);
         $fieldset->setTstamp(time());
+;
 
         $fieldset->save();
 
@@ -266,7 +268,6 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             } else {
                 $fieldset_id = $parent_id;
             }
-
 
             $element->setFieldsetId($fieldset_id);
             $element->setParentId($parent_id);
@@ -351,7 +352,13 @@ class Isatis_Formbuilder_Adminhtml_IndexController extends Mage_Adminhtml_Contro
             $post['error'] = true;
             $post['message'] = "Element NOT removed! Element not found in database";
         } else {
-            $elementModel = Mage::getModel('formbuilder/element');
+            //chcek if we need to remove a fieldset or a formelement
+            if(isset($post['elementType']) && $post['elementType']=='fieldset'){
+                $elementModel = Mage::getModel('formbuilder/fieldset');
+            } else {
+                $elementModel = Mage::getModel('formbuilder/element');
+            }
+
             $this->getCleanId($post['element_id']);
             $element_id = $post['element_id'];
 

@@ -241,7 +241,7 @@ div.col2 {
 }
 
 .editbuttons {
-    display: none;
+    /* display: none; */
 }
 
 .fieldset-droppable {
@@ -347,10 +347,18 @@ div.col2 {
 
 }
 
+div#feedback{
+    width:100%;
+    display:inline-block;
+    margin: 0px auto;
+}
 span.error {
     display: none;
+    font-size: 1.5em;
     font-family: "Helvetica Neue", Helvetica, Verdana, sans-serif;
     color: #d80000;
+    float:left;
+
 }
 
 span.message {
@@ -377,6 +385,7 @@ input[type=submit] {
     padding: 1px 7px 2px;
     text-align: center !important;
     white-space: nowrap;
+    line-height: 1.5em;
 }
 
 /* --- inputs --- */

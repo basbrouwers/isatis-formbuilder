@@ -52,6 +52,10 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
         return $result;
     }
 
+    public function validateId(){
+        return $this->getRequest()->getPost('form_id');
+    }
+
     /**
      * [publishFormAction description]
      * @return string html code of the form content, not form tag itself!
@@ -66,7 +70,7 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
         $form_id = null;
 
         if (!isset($post['form_id']) || $post['form_id'] == '') {
-            throw new Exception('No form ID found');
+            return 'No valid form found';
         }
 
         $form_id = $post['form_id'];
@@ -161,6 +165,8 @@ class Isatis_Formbuilder_Block_Form extends Mage_Core_Block_Template
         $formId = null;
         if (isset($post['form_id']) && $post['form_id'] != '') {
             $formId = $post['form_id'];
+        } else {
+            return false;
         }
 
         $formTitle = Mage::getModel('formbuilder/form')->getCollection()->addFieldToFilter('form_id', $formId)->getData();

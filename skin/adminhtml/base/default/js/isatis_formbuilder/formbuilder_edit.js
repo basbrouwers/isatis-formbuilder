@@ -51,13 +51,8 @@ form = {
         //set the id of the form for the publish function
         $j('#publish_form_id').val(form.data.form_id);
 
-        //set pageTemplate
-        $j('select[name=form_template]').val(form.data.template);
-
         //set formTemplate
         $j('select[name=form_subtemplate]').val(form.data.subtemplate);
-
-
         $j('#page-1').html($j('#' + form.data.subtemplate + 'column').html());
 
         //loop through the fieldsets and add them to the form
@@ -65,7 +60,8 @@ form = {
             form.addFieldSet(value);
         });
 
-        $j('.droppable').droppable(droptions);
+        $j('.droppable.fieldset-only').droppable(droptions);
+        $j('.droppable.fieldset-droppable').droppable(fieldsetDroptions);
     },
 
     /**
@@ -101,6 +97,8 @@ form = {
 
         //set id attribute of the fieldset
         fieldsetTemplate.attr('id', 'element_' + fieldset.fieldset_id);
+
+        fieldsetTemplate.attr('name', fieldset.name);
 
         //set the id of the sortable element so we can refer to it when needed
         fieldsetTemplate.find('.sortable').attr('id', 'sortable_' + fieldset.fieldset_id);

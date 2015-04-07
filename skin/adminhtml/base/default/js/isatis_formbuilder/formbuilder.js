@@ -5,8 +5,8 @@
 //make jQuery play nice with Prototype
 $j = jQuery.noConflict();
 
-Validation.add('validate-date-month-nl', '', function(v) {
-    return  (v == '' || (v == null) || (v.length == 0) || /(?:(0?[1-9]|1[012]) | (?:Januari|Februari|Maart|April|Mei|Juni|July|Augustus|September|O[c|k]tober)|November|December)/.test(v));
+Validation.add('validate-date-month-nl', '', function (v) {
+    return (v == '' || (v == null) || (v.length == 0) || /(?:(0?[1-9]|1[012]) | (?:Januari|Februari|Maart|April|Mei|Juni|July|Augustus|September|O[c|k]tober)|November|December)/.test(v));
 });
 
 //define the settings for jquery droppable objects
@@ -36,15 +36,15 @@ var droptions = {
             $j(dropzone).droppable({accept: 'draggable'});
             $j(dropzone).droppable(fieldsetDroptions).appendTo($j(dropzone).parent());
             console.log('adding droparea for elements');
-            
+
         }
         //append the new droppable element to the parent object
         $j(newDropArea).droppable(droptions).appendTo($j(this).parent());
     }
 };
 
-var fieldsetDroptions = $j.extend(true,{},droptions);
-    fieldsetDroptions.accept = '.formelement';
+var fieldsetDroptions = $j.extend(true, {}, droptions);
+fieldsetDroptions.accept = '.formelement';
 
 var leef = {
     version: '1.0.0',
@@ -79,6 +79,10 @@ var leef = {
 
             $j('body').on('click', 'legend', function () {
                 $j(this).parent().find('.sortable').slideToggle();
+                if ($j(this).parent().find('.sortable').visible()) {
+                    console.log('edit buttons available');
+
+                }
             }),
             //enable delete button
             $j('body').on('click', '.btn-remove', function () {
@@ -121,6 +125,12 @@ var leef = {
             $j(document).on('submit', 'form', function () {
                 //don't handle forms that have nonAjax class
                 if ($j(this).hasClass('nonAjax')) {
+                    if($j(this).attr('id')=='formSelector' && $j(this).find('select').val()==null) {
+                        leef.displayError('Please select a form to load.');
+
+                        return false;
+                        
+                    }
                     //return true so default event fires and form is submitted
                     return true;
                 }
@@ -251,17 +261,13 @@ var leef = {
 
         $j(droppedElement).find('.box').removeAttr('id');
 
-        $j(droppedElement).find('legend').append('<span>+</span>');
-
-        var container = '<div>' + droppedElement + '</div><div class="editbuttons"><div class="btn-icon btn-edit">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div><div class="btn-icon btn-duplicate">&nbsp;</div></div>';
+        var container = droppedElement + '<div class="editbuttons"><div class="btn-icon btn-edit">&nbsp;</div><div class="btn-icon btn-remove">&nbsp;</div><div class="btn-icon btn-duplicate">&nbsp;</div></div>';
 
 
         if (droppedElement.indexOf('fieldset') == -1 && droppedElement.indexOf('group')) {
             container += '<div class="tab sortable"><div class="droppable hidden-droppable"></div></div>';
-            //new element added so we need to make sure the sortorder is calculated
-            //newElementAdded is used after submitting the editform to determine if sorting is needed
-
         }
+
         leef.newElementAdded = true;
         $j(container).appendTo(droparea);
 
@@ -299,6 +305,9 @@ var leef = {
         var element_id = $j(element).closest('.formRow').attr('id');
 
         formData.push({name: 'element_id', value: element_id});
+        //check is the element to be removed is a fieldset or formelement
+        var elementType = $j(element).closest('.formRow').find('.formElement').attr('data-element-type');
+        formData.push({name: 'elementType', value: elementType});
 
         $j.post(url, formData, function (response) {
             if (!response.error) {
@@ -339,10 +348,13 @@ var leef = {
     editElement: function (button) {
         //determine element type and determine what fields to display
 
-        var element = $j(button).parent().parent().find('.formElement');
+
+        var element = $j(button).closest('.formRow').find('.formElement');
+
         leef.activeField = element;
 
         var elementType = element.attr('data-element-type');
+
         //set the parent_id of the element to the id parent element
         var parentElementType = leef.determineParent(element, elementType);
 
@@ -413,12 +425,16 @@ var leef = {
         if (leef.newElementAdded) {
             $j('#element_id').val('');
         } else {
-            $j('#element_id').val(leef.activeField.closest('.formRow').attr('id'));
+            //determine the id
+            if (parentElementType = 'form') {
+                $j('#element_id').val(leef.activeField.attr('id'));
+            } else {
+                $j('#element_id').val(leef.activeField.closest('.formRow').attr('id'));
+            }
         }
 
         //set the element type
         $j('#element_type').val(elementType);
-
 
         $j('#elementName').attr('value', leef.getElementName());
 
@@ -429,8 +445,6 @@ var leef = {
 
         var formfields = $j("#generalFormElements").clone();
 
-        
-
         switch (elementType) {
             case 'fieldset':
                 //set the columnumber where the fieldset is placed
@@ -438,6 +452,9 @@ var leef = {
                 $j('#pagenumber').val(leef.activeField.closest('.formcontainer').attr('id').substr(5));
                 //get legend text
                 $j('#elementLegend').attr('value', leef.activeField.find('legend').text());
+
+                $j('#elementName').attr('value', leef.activeField.attr('name'));
+
                 formfields.append($j('#legendEditField').clone());
                 break;
 
@@ -528,9 +545,6 @@ var leef = {
         if (parentElementType == 'checkbox' || parentElementType == 'radio') {
             formfields.append($j('#parentDependencyEditField').clone());
         }
-
-
-        //$j(formfields).show();
 
         return formfields;
     },

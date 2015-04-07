@@ -41,12 +41,6 @@ class Isatis_Formbuilder_IndexController extends Mage_Core_Controller_Front_Acti
             return;
         }
 
-
-echo "<pre>";
-print_r($post);
-echo "</pre>";
-
-
         $data = '';
 
         foreach ($post as $fieldsetKey => $fieldset) {
