@@ -58,6 +58,8 @@ form = {
         //loop through the fieldsets and add them to the form
         $j.each(form.data.fieldsets, function (index, value) {
             form.addFieldSet(value);
+            console.log('adding fieldset');
+            
         });
 
         $j('.droppable.fieldset-only').droppable(droptions);
@@ -71,7 +73,7 @@ form = {
     addFieldSet: function (fieldset) {
         //check if the page where the fieldset has to be added already exists. If not add page
 
-        if (!$j('#page-' + fieldset.pagenumber).length) {
+        if (fieldset.pagenumber>0 && !$j('#page-' + fieldset.pagenumber).length) {
 
             //add the page by cloning page 1
             var newPage = $j('#page-1').clone();
